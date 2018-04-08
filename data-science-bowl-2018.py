@@ -8,7 +8,7 @@
 
 # Import libraries:
 
-# In[2]:
+# In[14]:
 
 import warnings
 import random
@@ -23,6 +23,7 @@ from skimage.io import imshow
 import numpy as np
 import pandas as pd
 import pathlib
+import torch
 
 import matplotlib.pyplot as plt
 
@@ -146,8 +147,10 @@ def load_data(ids,path,training_data,im_folder='images',              mask_folde
         # TODO: Check if `mode` indeed needs to be 'constant' here
         arr_im = resize(arr_im, (im_dim_1,im_dim_2,im_dim_3),                        mode='constant', preserve_range=True)
         
+        t_im = torch.from_numpy(arr_im)
+        
         # add numpy image array to X list
-        X.append(arr_im)
+        X.append(t_im)
         
         if training_data:
 
@@ -170,7 +173,8 @@ def load_data(ids,path,training_data,im_folder='images',              mask_folde
 
                 arr_full_mask = np.maximum(arr_full_mask,arr_mask)
 
-            y.append(arr_full_mask)
+            t_full_mask = torch.from_numpy(arr_full_mask)
+            y.append(t_full_mask)
     
     return X, y
 
@@ -203,6 +207,11 @@ plt.show()
 # - [A 60-minute PyTorch Blitz tutorial that walks through a simple image classification model](http://pytorch.org/tutorials/beginner/deep_learning_60min_blitz.html)
 
 # # Design our PyTorch model
+
+# In[ ]:
+
+
+
 
 # # Train and implement the model
 

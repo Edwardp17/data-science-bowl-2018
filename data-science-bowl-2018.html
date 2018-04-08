@@ -11804,7 +11804,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">warnings</span>
@@ -11820,6 +11820,7 @@ div#notebook {
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">import</span> <span class="nn">torch</span>
 
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 </pre></div>
@@ -12917,8 +12918,10 @@ zSjE0iNxOjpVIJ4B5KArC/8fsCJu7gKHv0cAAAAASUVORK5CYII=
         <span class="n">arr_im</span> <span class="o">=</span> <span class="n">resize</span><span class="p">(</span><span class="n">arr_im</span><span class="p">,</span> <span class="p">(</span><span class="n">im_dim_1</span><span class="p">,</span><span class="n">im_dim_2</span><span class="p">,</span><span class="n">im_dim_3</span><span class="p">),</span>\
                         <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">,</span> <span class="n">preserve_range</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         
+        <span class="n">t_im</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">arr_im</span><span class="p">)</span>
+        
         <span class="c1"># add numpy image array to X list</span>
-        <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arr_im</span><span class="p">)</span>
+        <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t_im</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="n">training_data</span><span class="p">:</span>
 
@@ -12945,7 +12948,8 @@ zSjE0iNxOjpVIJ4B5KArC/8fsCJu7gKHv0cAAAAASUVORK5CYII=
 
                 <span class="n">arr_full_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">arr_full_mask</span><span class="p">,</span><span class="n">arr_mask</span><span class="p">)</span>
 
-            <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arr_full_mask</span><span class="p">)</span>
+            <span class="n">t_full_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">arr_full_mask</span><span class="p">)</span>
+            <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t_full_mask</span><span class="p">)</span>
     
     <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span>
 </pre></div>
@@ -13032,6 +13036,19 @@ zSjE0iNxOjpVIJ4B5KArC/8fsCJu7gKHv0cAAAAASUVORK5CYII=
 <h1 id="Design-our-PyTorch-model">Design our PyTorch model<a class="anchor-link" href="#Design-our-PyTorch-model">&#182;</a></h1>
 </div>
 </div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+</div>
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
