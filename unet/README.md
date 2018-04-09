@@ -1,1 +1,0 @@
-UNet implementation adapted from [here](https://github.com/jvanvugt/pytorch-unet).
