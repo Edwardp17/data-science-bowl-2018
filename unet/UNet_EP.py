@@ -46,7 +46,7 @@ class ExpandingPath(nn.Module):
     def __init__(self, in_channels, out_channels, upsample_size):
         super(ExpandingPath, self).__init__()
 
-        self.upSample = nn.Upsample(size=upsample_size, scale_factor=(2, 2), mode="bilinear")
+        #self.upSample = nn.Upsample(size=upsample_size, scale_factor=(2, 2), mode="bilinear")
         self.upconvr = nn.ConvTranspose2d(in_channels, out_channels, kernel_size = (2,2), stride = 2, padding = 0)
         # Crop + concat step between these 2
         self.convr1 = ConvBnRelu(in_channels, out_channels, kernel_size=(3, 3), stride=1, padding=0)
@@ -65,7 +65,7 @@ class ExpandingPath(nn.Module):
         return torch.cat((upsampled, bypass), 1)
 
     def forward(self, x, down_tensor):
-        x = self.upSample(x)
+        #x = self.upSample(x)
         x = self.upconvr(x)
         x = self._crop_concat(x, down_tensor)
         x = self.convr1(x)
