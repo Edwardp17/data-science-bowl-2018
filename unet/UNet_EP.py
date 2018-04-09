@@ -39,8 +39,8 @@ class ContractingPath(nn.Module):
 #  transposed convolutions for this), a concatenation with the corresponding
 #  cropped feature map from the Contracting Path, and 2 3x3 convolutions
 #  each followed by ReLU
-#Note: not totally sure what stride for upconvr should be
-#Note: Not entirely sure we need upsampling and Transposed Convolution,
+#TODO: not totally sure what stride for upconvr should be
+#TODO: Not entirely sure we need upsampling and Transposed Convolution,
 #  we may only just need one of them
 class ExpandingPath(nn.Module):
     def __init__(self, in_channels, out_channels, upsample_size):
@@ -50,7 +50,7 @@ class ExpandingPath(nn.Module):
         self.upconvr = nn.ConvTranspose2d(in_channels, out_channels, kernel_size = (2,2), stride = 2, padding = 0)
         # Crop + concat step between these 2
         self.convr1 = ConvBnRelu(in_channels, out_channels, kernel_size=(3, 3), stride=1, padding=0)
-        self.convr2 = ConvBnRelu(in_channels, out_channels, kernel_size=(3, 3), stride=1, padding=0)
+        self.convr2 = ConvBnRelu(out_channels, out_channels, kernel_size=(3, 3), stride=1, padding=0)
 
     def _crop_concat(self, upsampled, bypass):
         """
@@ -73,9 +73,6 @@ class ExpandingPath(nn.Module):
         return x
 
 #UNet
-#Note: I like the defined channel values, because it should keep the
-#  model working how its supposed to, but I dont think the way its implented
-#  now makes sense according to the diagram of the model, need to revisit
 class UNetOriginal(nn.Module):
     def __init__(self, in_shape):
         super(UNetOriginal, self).__init__()
