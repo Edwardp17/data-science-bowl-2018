@@ -2,14 +2,17 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader
 
+# custom classes
+from data.fetcher import DatasetFetcher
+
 
 def main():
     # Hyperparameters
-    #input_img_resize = (572, 572)  # The resize size of the input images of the neural net
+    input_img_resize = (512, 512)  # The resize size of the input images of the neural net
     #output_img_resize = (388, 388)  # The resize size of the output images of the neural net
     #batch_size = 3
     epochs = 50
-    threshold = np.arange(0.5,1,0.05)
+    thresholds = np.arange(0.5,1,0.05)
     validation_size = 0.2
     sample_size = None  # Put 'None' to work on full dataset or a value between 0 and 1
 
