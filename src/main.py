@@ -14,7 +14,8 @@ def main():
     epochs = 50
     thresholds = np.arange(0.5,1,0.05)
     validation_size = 0.2
-    sample_size = None  # Put 'None' to work on full dataset or a value between 0 and 1
+    # NOTE: Removing sample_size for now to descope, can be implemented later.
+    # sample_size = None  # Put 'None' to work on full dataset or a value between 0 and 1
 
     # -- Optional parameters
     threads = cpu_count()
@@ -29,3 +30,9 @@ def main():
     # Download the datasets
     ds_fetcher = DatasetFetcher()
     ds_fetcher.download_dataset()
+
+    # Get the path to the files for the neural net
+    X_train, y_train, X_valid, y_valid = ds_fetcher.get_train_files(validation_size=validation_size)
+    
+    # TODO: Implement get_test_files
+    # full_x_test = ds_fetcher.get_test_files(sample_size)

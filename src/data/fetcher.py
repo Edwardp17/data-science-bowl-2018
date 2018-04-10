@@ -34,11 +34,19 @@ class DatasetFetcher:
         self.masks_ids = None
         self.test_ids = None
 
-        # Adding more attributes
+        # Adding more general attributes
         self.competition_name = competition_name
         self.data_dir = data_dir
         self.train_folder = train_folder
         self.test_folder = test_folder
+
+        # These attributes get populated when we split
+        # our training data into training and validation
+        # in get_train_files.
+        self.X_train = None
+        self.y_train = None
+        self.X_valid = None
+        self.y_valid = None
 
     def download_dataset(self):
         """
@@ -102,41 +110,23 @@ class DatasetFetcher:
         all_train_ids = [t for t in self.train_files]
         unique_train_ids = list(set(t for t in self.train_files))
         if len(all_train_ids) != len(unique_train_ids):
-            raise ValueError("There are duplicate training IDs. Please check.")
+            raise Exception("There are duplicate training IDs. Please check.")
         self.train_ids = unique_train_ids
 
         all_test_ids = [t for t in self.test_files]
         unique_test_ids = list(set(t for t in self.test_files))
         if len(all_test_ids) != len(unique_test_ids):
-            raise ValueError("There are duplicate test IDs. Please check.")
+            raise Exception("There are duplicate test IDs. Please check.")
         self.test_ids = unique_test_ids
         
         return datasets_path
 
-    #This part below is where I noticed the larger differences in his data vs ours
-    def get_nuc_image_files(self, nuc_image_id, test_file=False, get_mask=False):
-        if get_mask:
-            if nuc_image_id in self.masks_ids:
-                return [self.train_masks_data + "/" + s for s in self.train_masks_files if nuc_image_id in s]
-            else:
-                raise Exception("No mask with this ID found")
-        elif test_file:
-            if nuc_image_id in self.test_ids:
-                return [self.test_data + "/" + s for s in self.test_files if nuc_image_id in s]
-        else:
-            if nuc_image_id in self.train_ids:
-                return [self.train_data + "/" + s for s in self.train_files if nuc_image_id in s]
-        raise Exception("No image with this ID found")
-
-    def get_image_matrix(self, image_path):
-        img = Image.open(image_path)
-        return np.asarray(img, dtype=np.uint8)
-
-    def get_image_size(self, image):
-        img = Image.open(image)
-        return img.size
-
-    def get_train_files(self, validation_size=0.2, sample_size=None):
+    # TODO: sample_size has been removed as a parameter for now, but can be added later.
+    # def get_train_files(self, validation_size=0.2, sample_size=None):
+    # NOTE: Adding im_folder, mask_folder, and im_file_type here, similar to the way we had it in load_data.
+    # NOTE: Dimensions have been changed to convert each image to an RGBA 512x512 square.
+    def get_train_files(self, validation_size=0.2,im_folder='images',mask_folder='masks',im_file_type='.png',\
+        im_dim_1=512,im_dim_2=512,im_dim_3=4):
         """
         Args:
             validation_size (float):
@@ -149,44 +139,103 @@ class DatasetFetcher:
                 Returns the dataset in the form:
                 [train_data, train_masks_data, valid_data, valid_masks_data]
         """
+        # validate that train_ids is not None
+        if train_ids == None:
+            raise Exception("train_ids is None. Do you need to run DatasetFetcher.download_dataset?")
         train_ids = self.train_ids
 
-        # Each id has 16 images but well...
-        if sample_size:
-            rnd = np.random.choice(self.train_ids, int(len(self.train_ids) * sample_size))
-            train_ids = rnd.ravel()
+        # TODO: This has been descoped for now, but can be implemented later.
+        # if sample_size:
+        #     rnd = np.random.choice(self.train_ids, int(len(self.train_ids) * sample_size))
+        #     train_ids = rnd.ravel()
 
         if validation_size:
             ids_train_split, ids_valid_split = train_test_split(train_ids, test_size=validation_size)
         else:
             ids_train_split = train_ids
             ids_valid_split = []
+        
+        X_train = []
+        y_train = []
+        X_valid = []
+        y_valid = []
 
-        train_ret = []
-        train_masks_ret = []
-        valid_ret = []
-        valid_masks_ret = []
+        # TODO: Clean this up.
+        dataset_ids = {}
+        dataset_ids[X_train] = ids_train_split
+        # datasets[y_train] = ids_train_split
+        dataset_ids[X_valid] = ids_valid_split
+        # datasets[y_valid] = ids_valid_split
 
-        for id in ids_train_split:
-            train_ret.append(self.get_nuc_image_files(id))
-            train_masks_ret.append(self.get_nuc_image_files(id, get_mask=True))
+        for X, y in zip([X_train,X_valid],[y_train,y_valid]):
 
-        for id in ids_valid_split:
-            valid_ret.append(self.get_nuc_image_files(id))
-            valid_masks_ret.append(self.get_nuc_image_files(id, get_mask=True))
+            d_ids = dataset_ids[X]
+            # We use the range() here so that we can easily track progress and print
+            # our progress to the user after every 10 images that are loaded.
+            for i in range(len(d_ids)):
+                # print progress. 
+                if i % 10 == 0 and i != 0:
+                    print(str(i)+'/'+str(len(d_ids))+' images loaded..')
 
-        return [np.array(train_ret).ravel(), np.array(train_masks_ret).ravel(),
-                np.array(valid_ret).ravel(), np.array(valid_masks_ret).ravel()]
+                # get the actual id of the image.
+                id = d_ids[i]
 
-    def get_test_files(self, sample_size):
-        test_files = self.test_files
+                im = Image.open(self.train_data+'/'+im_folder+'/'+id+im_file_type)
+                arr_im = np.asarray(im)
 
-        if sample_size:
-            rnd = np.random.choice(self.test_files, int(len(self.test_files) * sample_size))
-            test_files = rnd.ravel()
+                # resize the image to standardize dimensions
+                # TODO: Check if `mode` indeed needs to be 'constant' here
+                arr_im = resize(arr_im, (im_dim_1,im_dim_2,im_dim_3),mode='constant', preserve_range=True)
+                # convert numpy array to tensor
+                t_im = torch.from_numpy(arr_im)
+                # append tensor to X
+                X.append(t_im)
+            
+            # TODO: double check that we want np.bool here
+            arr_full_mask = np.zeros((im_dim_1,im_dim_2,im_dim_3),dtype=np.bool)
 
-        ret = [None] * len(test_files)
-        for i, file in enumerate(test_files):
-            ret[i] = self.test_data + "/" + file
+            # BONUS_TODO: [2] in for statement below could be dynamic
+            for mask_file in next(os.walk(self.train_data+'/'+mask_folder+'/'))[2]:
+                # load a mask
+                im_mask = Image.open(self.train_data+'/'+mask_folder+'/'+mask_file)
+                # convert mask from image to array
+                arr_mask = np.asarray(im_mask)
+                # overlay this mask over every other mask for this image.
+                # given the nuclei areas are white and
+                # the areas with no nuclei are black, we can
+                # use np.maximum() here.
+                # first, we standardize the dimensions of the mask so it
+                # fits the image.
+                arr_mask = resize(arr_mask,(im_dim_1,im_dim_2,im_dim_3),mode='constant',preserve_range=True)
 
-        return np.array(ret)
+                arr_full_mask = np.maximum(arr_full_mask,arr_mask)
+            
+            # convert numpy array to tensor
+            t_full_mask = torch.from_numpy(arr_full_mask)
+            # append tensor to y
+            y.append(t_full_mask)
+
+        self.X_train = X_train
+        self.y_train = y_train
+        self.X_valid = X_valid
+        self.y_valid = y_valid
+
+        # Unlike Ekami's get_train_files, we're returning lists of tensors, not numpy arrays.
+        # NOTE: If we change the code downstream, this function doesn't need to return anything.
+        # We can get the same information by referencing the DatasetFetcher's relevant attributes.
+        # NOTE: the images are resized in get_train_files.,
+        return X_train, y_train, X_valid, y_valid
+
+    # TODO: Implement get_test_files
+    # def get_test_files(self, sample_size):
+    #     test_files = self.test_files
+
+    #     if sample_size:
+    #         rnd = np.random.choice(self.test_files, int(len(self.test_files) * sample_size))
+    #         test_files = rnd.ravel()
+
+    #     ret = [None] * len(test_files)
+    #     for i, file in enumerate(test_files):
+    #         ret[i] = self.test_data + "/" + file
+
+    #     return np.array(ret)
