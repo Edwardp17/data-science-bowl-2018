@@ -1,7 +1,8 @@
+import torch
+import torch.optim as optim
+from torch.autograd import Variable
 
 import nn.losses as losses_utils
-
-
 
 class DSBowlCLassifier:
     def __init__(self, net, max_epochs):
