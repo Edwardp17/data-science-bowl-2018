@@ -76,7 +76,7 @@ class ExpandingPath(nn.Module):
 class UNetOriginal(nn.Module):
     def __init__(self, in_shape):
         super(UNetOriginal, self).__init__()
-        channels, height, width = in_shape
+        height, width, channels = in_shape
 
         self.down1 = ContractingPath(channels, 64)
         self.down2 = ContractingPath(64, 128)

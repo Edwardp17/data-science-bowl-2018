@@ -2,6 +2,7 @@ import os
 
 import numpy as np
 from PIL import Image
+from skimage.transform import resize
 from sklearn.model_selection import train_test_split
 
 # kaggle_data is an unofficial Kaggle data import module.
@@ -125,6 +126,7 @@ class DatasetFetcher:
     # def get_train_files(self, validation_size=0.2, sample_size=None):
     # NOTE: Adding im_folder, mask_folder, and im_file_type here, similar to the way we had it in load_data.
     # NOTE: Dimensions have been changed to convert each image to an RGBA 512x512 square.
+    # TODO: Update dimension variable names to be more intuitive.
     def get_train_files(self, validation_size=0.2,im_folder='images',mask_folder='masks',im_file_type='.png',\
         im_dim_1=512,im_dim_2=512,im_dim_3=4):
         """
