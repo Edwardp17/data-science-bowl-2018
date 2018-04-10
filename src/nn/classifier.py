@@ -31,10 +31,20 @@ class DSBowlCLassifier:
     # to minimize the loss criteria for each image, it should minimize average
     # losses across many images as well.
     def _criterion(self, pred_mask, gt_mask):
+        pred_mask = pred_mask.view(1,-1)
+        gt_mask = gt_mask.view(1,-1)
+        # NOTE: explicitly calling forward() might not be
+        # right here.
         l = losses_utils.IoU().forward(pred_mask,gt_mask)
         return l
 
-    def _train_epoch(self, train_loader, optimizer, threshold):
+    # NOTE: _train_epoch is used for both training and validation,
+    # since the operations are exactly the same in our model and
+    # just use different data.                
+    def _train_epoch(self, train_loader, optimizer):
+
+        all_losses = []
+
         for ind, (im, gt_mask) in enumerate(train_loader):
             if self.use_cuda:
                     im = im.cuda()
@@ -44,7 +54,7 @@ class DSBowlCLassifier:
             im, mask = Variable(im), Variable(gt_mask)
 
             # forward
-            pred_masks = self.net.forward(im)
+            pred_masks = self.net(im)
             # NOTE: The immediately below isn't relevant to us
             # because we want our model to output probabilities.
             # probs = F.sigmoid(logits)
@@ -56,17 +66,27 @@ class DSBowlCLassifier:
             loss.backward()
             optimizer.step()
 
+            all_losses.append(loss)
+
             # TODO: Printing statistics on our performance would be nice.
 
-            
-
+        return np.mean(all_losses)
 
     def _run_epoch(self, train_loader: DataLoader, valid_loader: DataLoader,\
         optimizer):
 
-        # TODO: Double check if this is relevant
         # switch to train mode
         self.net.train()
+
+        train_loss = self._train_epoch(train_loader,optimizer)
+
+        # switch to evaluate mode
+        self.net.eval()
+
+        # NOTE: _train_epoch is used for both training and validation,
+        # since the operations are exactly the same in our model and
+        # just use different data.
+        val_loss = self._train_epoch(valid_loader)
 
 
     def train(self, train_loader: DataLoader, valid_loader: DataLoader,\
@@ -89,7 +109,7 @@ class DSBowlCLassifier:
             # lr_scheduler = ReduceLROnPlateau(optimizer, 'min', patience=2, verbose=True, min_lr=1e-7)
 
             for epoch in range(epochs):
-            self._run_epoch(train_loader, valid_loader, optimizer, lr_scheduler, threshold, callbacks)
+                self._run_epoch(train_loader, valid_loader, optimizer, lr_scheduler, threshold, callbacks)
 
         # TODO: Double check if we need this.
         # # If there are callback call their __call__ method and pass in some arguments
@@ -101,5 +121,33 @@ class DSBowlCLassifier:
         #            )
 
 
-    def predict():
-    
+    def predict(self, test_loader):
+        """
+            Launch the prediction on the given loader and pass
+            each predictions to the given callbacks.
+        Args:
+            test_loader (DataLoader): The loader containing the test dataset
+        """
+
+        # Switch to evaluation mode
+        self.net.eval()
+
+        # pred_masks = []
+        files_to_pred_masks = {}
+        for ind, (im, file_names) in enumerate(test_loader):
+
+            if self.use_cuda:
+                im = im.cuda()
+
+            im = Variable(im)
+
+            # forward
+            # forward
+            pred_mask = self.net(im)
+
+            # Convert tensor to numpy for return    
+            pred_mask = pred_mask.numpy()
+
+            files_to_pred_masks[files_names] = pred_mask
+        
+        return files_to_pred_masks

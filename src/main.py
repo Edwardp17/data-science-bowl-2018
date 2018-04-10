@@ -1,11 +1,13 @@
 import numpy as np
 import os
+import pandas as pd
 import torch
 from torch.utils.data import DataLoader
 
 # custom classes
 from data.fetcher import DatasetFetcher
 import nn.unet_nb as unet
+from encoding.encoding import RunLengthEncoding
 
 
 def main():
@@ -63,5 +65,38 @@ def main():
     in_shape = (im_height, im_width, im_channels)
     net = unet.UNetOriginal(in_shape)
 
-    
-    classifier = nn.classifier.CarvanaClassifier(net, epochs)
+    classifier = nn.classifier.DSBowlCLassifier(net,epochs)
+
+    # because X_train and y_train are already tensors from get_train_files,
+    # we don't need to transform them anymore. We just need to put them
+    # together in the same tuple and then input them into a DataLoader.
+    train_ds = (X_train, y_train)
+    train_loader = DataLoader(train_ds,pin_memory=use_cuda)
+
+    # same with validation set as with training set
+    valid_ds = (X_valid, y_valid)
+    valid_loader = DataLoader(valid_ds,pin_memory=use_cuda)
+
+    print("Training on {} samples and validating on {} samples "
+          .format(len(train_loader.dataset), len(valid_loader.dataset)))
+
+    classifier.train(train_loader, valid_loader, epochs)
+
+    # TODO: Implement loading the test dataset
+    # test_ds = (X_test)
+    # test_loader = DataLoader(test_ds,pin_memory=use_cuda)
+
+    # Predict and save
+    # returns a dict of file names and numpy array prediction masks
+    files_to_pred_masks = classifier.predict(test_loader)
+
+    # TODO: We may need to turn predictions from classifications here,
+    # but I don't full understand how that factors in.
+    # I'm looking at the "Check RLE" section of this notebook, for
+    # reference: https://www.kaggle.com/kmader/nuclei-overview-to-submission    
+    encoder = RunLengthEncoding()
+    # this returns a pandas dataframe
+    df_predictions = encoder.encode_predictions(files_to_pred_masks)
+    # output predictions to CSV. Note that the index here is required
+    # because that is where the file names show up.
+    df_predictions.to_csv('predictions.csv',index=True)
