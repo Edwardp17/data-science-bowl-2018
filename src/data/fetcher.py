@@ -231,7 +231,7 @@ class DatasetFetcher:
                     # use np.maximum() here.
                     # first, we standardize the dimensions of the mask so it
                     # fits the image.
-                    arr_mask = resize(arr_mask,(im_dim_1,im_dim_2,im_dim_3)
+                    arr_mask = resize(arr_mask,(im_dim_1,im_dim_2,im_dim_3))
 
                     arr_full_mask = np.maximum(arr_full_mask,arr_mask)
                 
