@@ -144,7 +144,7 @@ class DatasetFetcher:
                 [train_data, train_masks_data, valid_data, valid_masks_data]
         """
         # validate that train_ids is not None
-        if train_ids == None:
+        if self.train_ids == None:
             raise Exception("train_ids is None. Do you need to run DatasetFetcher.download_dataset?")
         train_ids = self.train_ids
 
@@ -248,7 +248,7 @@ class DatasetFetcher:
         im_dim_1=512,im_dim_2=512,im_dim_3=4):
 
         # validate that test_ids is not None
-        if test_ids == None:
+        if self.test_ids == None:
             raise Exception("test_ids is None. Do you need to run DatasetFetcher.download_dataset?")
         test_ids = self.test_ids
 
