@@ -228,6 +228,21 @@ class DatasetFetcher:
                 # append tensor to y
                 y.append(t_full_mask)
 
+        # Check if training data looks all right
+        ix = random.randint(0, len(ids_train_split))
+        imshow(X_train[ix])
+        plt.show()
+        imshow(np.squeeze(y_train[ix]))
+        plt.show()
+
+        okay = raw_input("Does the random image and its corresponding max look okay? (y / n")
+
+        if okay == 'y':
+            print("Thanks! Continuing..")
+        else:
+            print("Aborting! Don't panic.")
+            raise ValueError("User did not specify random image and mask looked okay.")
+
         self.X_train = X_train
         self.y_train = y_train
         self.X_valid = X_valid
