@@ -58,7 +58,7 @@ class DSBowlCLassifier:
 
         all_losses = []
 
-        for ind, (im, gt_mask) in enumerate(train_loader):
+        for im, gt_mask in train_loader:
             if self.use_cuda:
                     im = im.cuda()
                     gt_mask = gt_mask.cuda()
@@ -197,7 +197,7 @@ class DSBowlCLassifier:
 
         files_to_pred_masks = {}
         total_img_num = len(test_loader)
-        for ind, (im, file_names) in enumerate(zip(test_loader,file_names)):
+        for im, file_names in zip(test_loader,file_names):
             
             if self.use_cuda:
                 im = im.cuda()
@@ -234,7 +234,7 @@ class DSBowlCLassifier:
                 # pred_mask = pred_mask > 0
 
                 files_to_pred_masks[file_names] = pred_mask
-                print("predicted {}/{} image masks".format(ind+1,total_img_num))
+                # print("predicted {}/{} image masks".format(ind+1,total_img_num))
 
             else:
 
