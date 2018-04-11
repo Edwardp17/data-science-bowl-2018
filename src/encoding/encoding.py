@@ -8,7 +8,7 @@ class RunLengthEncoding():
         self.dict_encoded = {}
         # self.df_encoded = None
 
-    def encode_predictions(files_to_pred_masks):
+    def encode_predictions(self, files_to_pred_masks):
         for file_name in files_to_pred_masks.values():
             self.dict_encoded[file_name] = self.rle_encoding(files_to_pred_masks[file_name])
 
