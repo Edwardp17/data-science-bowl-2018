@@ -83,12 +83,12 @@ def main(predict=True):
     # we don't need to transform them anymore. We just need to put them
     # together in the same tuple and then input them into a DataLoader.
     print("Loading training data..")
-    train_ds = (X_train, y_train)
+    train_ds = [(X, y) for X,y in zip(X_train, y_train)]
     train_loader = DataLoader(dataset=train_ds,batch_size=1,pin_memory=use_cuda)
 
     # same with validation set as with training set
     print("Loading validation data..")
-    valid_ds = (X_valid, y_valid)
+    valid_ds = [(X, y) for X,y in zip(X_valid, y_valid)]
     valid_loader = DataLoader(dataset=valid_ds,batch_size=1,pin_memory=use_cuda)
 
     print("Training on {} samples and validating on {} samples.."
