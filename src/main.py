@@ -24,7 +24,7 @@ def main(predict=True):
     # input_img_resize = (512, 512)  # The resize size of the input images of the neural net
     #output_img_resize = (388, 388)  # The resize size of the output images of the neural net
     #batch_size = 3
-    epochs = 10
+    epochs = 2
     print("epochs: "+str(epochs))
     thresholds = np.arange(0.5,1,0.05)
     validation_size = 0.2
