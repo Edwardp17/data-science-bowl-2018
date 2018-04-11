@@ -6,6 +6,8 @@ from PIL import Image
 from skimage.transform import resize
 from sklearn.model_selection import train_test_split
 
+import matplotlib.pyplot as plt
+
 # kaggle_data is an unofficial Kaggle data import module.
 # from kaggle_data.downloader import KaggleDataDownloader
 
@@ -175,9 +177,9 @@ class DatasetFetcher:
 
         # TODO: Clean this up.
         dataset_ids = {}
-        dataset_ids['X_train'] = ids_train_split
+        dataset_ids['X_train'] = ids_train_split[:10]
         # datasets[y_train] = ids_train_split
-        dataset_ids['X_valid'] = ids_valid_split
+        dataset_ids['X_valid'] = ids_valid_split[:10]
         # datasets[y_valid] = ids_valid_split
 
         for X_name, X, y in zip(['X_train','X_valid'],[X_train,X_valid],[y_train,y_valid]):
@@ -228,14 +230,21 @@ class DatasetFetcher:
                 # append tensor to y
                 y.append(t_full_mask)
 
-        # Check if training data looks all right
+        # Check if training data looks alright
         ix = random.randint(0, len(ids_train_split))
         imshow(X_train[ix])
         plt.show()
         imshow(np.squeeze(y_train[ix]))
         plt.show()
 
-        okay = raw_input("Does the random image and its corresponding max look okay? (y / n")
+        # Check if validation data looks alright
+        ix = random.randint(0, len(ids_valid_split))
+        imshow(X_valid[ix])
+        plt.show()
+        imshow(np.squeeze(y_valid[ix]))
+        plt.show()
+
+        okay = raw_input("Do the random images and their corresponding masks look okay? (y / n")
 
         if okay == 'y':
             print("Thanks! Continuing..")
