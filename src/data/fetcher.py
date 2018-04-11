@@ -190,7 +190,7 @@ class DatasetFetcher:
         # datasets[y_valid] = ids_valid_split
 
         # set Image transforms
-        im_transform = Compose([Grayscale(num_output_channels=im_dim_3),Resize((im_dim_1,im_dim_2,im_dim_3)),ToTensor()])
+        im_transform = Compose([Grayscale(num_output_channels=im_dim_3),Resize((im_dim_1,im_dim_2)),ToTensor()])
 
         for X_name, X, y in zip(['X_train','X_valid'],[X_train,X_valid],[y_train,y_valid]):
 
@@ -231,7 +231,7 @@ class DatasetFetcher:
                     # use np.maximum() here.
                     # first, we standardize the dimensions of the mask so it
                     # fits the image.
-                    arr_mask = resize(arr_mask,(im_dim_1,im_dim_2,im_dim_3))
+                    arr_mask = resize(arr_mask,(im_dim_1,im_dim_2))
 
                     arr_full_mask = np.maximum(arr_full_mask,arr_mask)
                 
@@ -301,7 +301,7 @@ class DatasetFetcher:
         dataset_ids['X_test'] = test_ids[:2]
 
         # set Image transforms
-        im_transform = Compose([Grayscale(num_output_channels=im_dim_3),Resize((im_dim_1,im_dim_2,im_dim_3)),ToTensor()])
+        im_transform = Compose([Grayscale(num_output_channels=im_dim_3),Resize((im_dim_1,im_dim_2)),ToTensor()])
 
         for X_name, X, X_file_name in zip(['X_test'],[X_test],[X_test_file_names]):
 

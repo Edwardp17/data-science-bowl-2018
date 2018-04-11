@@ -64,6 +64,7 @@ class DSBowlCLassifier:
             im, mask = Variable(im), Variable(gt_mask)
 
             # forward
+            im = im.unsqueeze(0)
             pred_mask = self.net(im)
             # NOTE: The immediately below isn't relevant to us
             # because we want our model to output probabilities.
@@ -159,6 +160,7 @@ class DSBowlCLassifier:
             im = Variable(im)
             
             # forward
+            im = im.unsqueeze(0)
             pred_mask = self.net(im)
 
             # Convert tensor to numpy for return    
