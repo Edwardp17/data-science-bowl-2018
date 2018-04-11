@@ -113,3 +113,6 @@ def main(predict=False):
         # output predictions to CSV. Note that the index here is required
         # because that is where the file names show up.
         df_predictions.to_csv('predictions.csv',index=True)
+
+if __name__ == "__main__":
+    main()
