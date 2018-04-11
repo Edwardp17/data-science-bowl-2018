@@ -253,6 +253,12 @@ class DatasetFetcher:
 
         # Check if training data looks alright
         ix = random.randint(0, len(ids_train_split))
+
+        # ONLY TESTING
+        print(ix)
+        okay = input("Okay?")
+        if okay != 'y': raise ValueError("Not okay")
+            
         imshow(X_train[ix].numpy())
         plt.show()
         imshow(np.squeeze(y_train[ix].numpy()))
