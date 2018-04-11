@@ -69,6 +69,7 @@ class DatasetFetcher:
         script_dir = os.path.dirname(os.path.abspath(__file__))
         
         # TODO: This is hacky, update.
+        os.chdir(script_dir)
         os.chdir(self.data_dir)
         self.train_data = str(os.getcwd())+'/'+self.train_folder
         self.test_data = str(os.getcwd())+'/'+self.test_folder
