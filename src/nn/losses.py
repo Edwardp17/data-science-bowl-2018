@@ -49,12 +49,19 @@ class IoU(nn.Module):
         # print("intersection: "+str(torch.sum(intersection)))
         # print("union: "+str(torch.sum(union)))
 
-        # iou = torch.sum(intersection.data > 0) / torch.sum(union.data > 0)
-        intersection = intersection > 0
-        union = union > 0
+        # conversion to get to binary using torch 
+        intersection = torch.clamp(intersection,min=0,max=1)
+        intersection = torch.ceil(intersection)
+        intersection = intersection.sum()
+
+        union = torch.clamp(union,min=0,max=1)
+        union = torch.ceil(union)
+        union = union.sum()
+
+        print(intersection.size())
+        print(union.size())
+
         iou = intersection.div(union)
-        print(iou)
-        iou = torch.sum(iou)
         print(iou)
 
         loss = 1 - iou
