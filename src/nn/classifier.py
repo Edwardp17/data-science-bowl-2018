@@ -125,7 +125,7 @@ class DSBowlCLassifier:
         # NOTE: _train_epoch is used for both training and validation,
         # since the operations are exactly the same in our model and
         # just use different data.
-        val_loss = self._train_epoch(valid_loader)
+        val_loss = self._train_epoch(valid_loader,optimizer)
 
 
     def train(self, train_loader: DataLoader, valid_loader: DataLoader,\
