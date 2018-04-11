@@ -74,7 +74,6 @@ class ExpandingPath(nn.Module):
     def forward(self, x, down_tensor):
         x = self.upSample(x)
         x = self.upconvr(x)
-        print(x.size(),down_tensor.size())
         x = self._crop_concat(x, down_tensor)
         x = self.convr1(x)
         x = self.convr2(x)
