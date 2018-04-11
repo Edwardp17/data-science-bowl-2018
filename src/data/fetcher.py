@@ -236,22 +236,28 @@ class DatasetFetcher:
                 # append tensor to y
                 y.append(t_full_mask)
 
-        # Check if training data looks alright
-        ix = random.randint(0, len(ids_train_split))
+        # # Check if training data looks alright
+        # ix = random.randint(0, len(ids_train_split))
 
-        imshow(X_train[ix].numpy())
-        plt.show()
-        imshow(y_train[ix].numpy())
-        # imshow(np.squeeze(y_train[ix].numpy()))
-        plt.show()
+        # imshow(X_train[ix].numpy())
+        # plt.show()
+        # imshow(y_train[ix].numpy())
+        # # imshow(np.squeeze(y_train[ix].numpy()))
+        # plt.show()
 
-        # Check if validation data looks alright
-        ix = random.randint(0, len(ids_valid_split))
-        imshow(X_valid[ix].numpy())
-        plt.show()
-        imshow(y_train[ix].numpy())
-        # imshow(np.squeeze(y_valid[ix].numpy()))
-        plt.show()
+        # # Check if validation data looks alright
+        # ix = random.randint(0, len(ids_valid_split))
+        # imshow(X_valid[ix].numpy())
+        # plt.show()
+        # imshow(y_train[ix].numpy())
+        # # imshow(np.squeeze(y_valid[ix].numpy()))
+        # plt.show()
+
+        # ONLY TESTING
+        print(type(X_train),type(y_train))
+        print(type(X_valid),type(y_valid))
+
+        print(y_train)
 
         okay = input("Do the random images and their corresponding masks look okay? (y / n")
 
