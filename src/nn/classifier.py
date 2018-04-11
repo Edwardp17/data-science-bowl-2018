@@ -234,4 +234,5 @@ class DSBowlCLassifier:
 
                 print("couldn't get test image to 4 dimensions. not predicting")
         
+        print(files_to_pred_masks)
         return files_to_pred_masks
