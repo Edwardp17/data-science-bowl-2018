@@ -241,3 +241,54 @@ class DatasetFetcher:
     #         ret[i] = self.test_data + "/" + file
 
     #     return np.array(ret)
+
+    def get_test_files(self,im_folder='images',im_file_type='.png',\
+        im_dim_1=512,im_dim_2=512,im_dim_3=4):
+
+        # validate that test_ids is not None
+        if test_ids == None:
+            raise Exception("test_ids is None. Do you need to run DatasetFetcher.download_dataset?")
+        test_ids = self.test_ids
+
+        # TODO: This has been descoped for now, but can be implemented later.
+        # if sample_size:
+        #     rnd = np.random.choice(self.train_ids, int(len(self.train_ids) * sample_size))
+        #     train_ids = rnd.ravel()
+
+        X_test = []
+
+        # TODO: Clean this up.
+        dataset_ids = {}
+        dataset_ids[X_test] = test_ids
+
+        for X in X_test:
+
+            d_ids = dataset_ids[X]
+            # We use the range() here so that we can easily track progress and print
+            # our progress to the user after every 10 images that are loaded.
+            for i in range(len(d_ids)):
+                # print progress. 
+                if i % 10 == 0 and i != 0:
+                    print(str(i)+'/'+str(len(d_ids))+' images loaded..')
+
+                # get the actual id of the image.
+                id = d_ids[i]
+
+                im = Image.open(self.test_data+'/'+im_folder+'/'+id+im_file_type)
+                arr_im = np.asarray(im)
+
+                # resize the image to standardize dimensions
+                # TODO: Check if `mode` indeed needs to be 'constant' here
+                arr_im = resize(arr_im, (im_dim_1,im_dim_2,im_dim_3),mode='constant', preserve_range=True)
+                # convert numpy array to tensor
+                t_im = torch.from_numpy(arr_im)
+                # append tensor to X
+                X.append(t_im)
+
+        self.X_test = X_test
+
+        # Unlike Ekami's get_train_files, we're returning lists of tensors, not numpy arrays.
+        # NOTE: If we change the code downstream, this function doesn't need to return anything.
+        # We can get the same information by referencing the DatasetFetcher's relevant attributes.
+        # NOTE: the images are resized in get_train_files.,
+        return X_test
