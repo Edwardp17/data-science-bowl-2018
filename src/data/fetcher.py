@@ -176,14 +176,6 @@ class DatasetFetcher:
         ids_train_split = ids_train_split[:2]
         ids_valid_split = ids_valid_split[:2]
 
-        # ONLY TESTING
-        print(ids_train_split)
-        print(ids_valid_split)
-
-        okay = input("Okay?")
-        if okay != 'y':
-            raise ValueError("Not okay")
-
         X_train = []
         y_train = []
         X_valid = []
@@ -244,31 +236,21 @@ class DatasetFetcher:
                 # append tensor to y
                 y.append(t_full_mask)
 
-        # ONLY TESTING
-        print(len(X_train),len(y_train))
-        print(len(X_valid),len(y_valid))
-
-        okay = input("Okay?")
-        if okay != 'y': raise ValueError("Not okay")
-
         # Check if training data looks alright
         ix = random.randint(0, len(ids_train_split))
 
-        # ONLY TESTING
-        print(ix)
-        okay = input("Okay?")
-        if okay != 'y': raise ValueError("Not okay")
-            
         imshow(X_train[ix].numpy())
         plt.show()
-        imshow(np.squeeze(y_train[ix].numpy()))
+        imshow(y_train[ix].numpy())
+        # imshow(np.squeeze(y_train[ix].numpy()))
         plt.show()
 
         # Check if validation data looks alright
         ix = random.randint(0, len(ids_valid_split))
         imshow(X_valid[ix].numpy())
         plt.show()
-        imshow(np.squeeze(y_valid[ix].numpy()))
+        imshow(y_train[ix].numpy())
+        # imshow(np.squeeze(y_valid[ix].numpy()))
         plt.show()
 
         okay = input("Do the random images and their corresponding masks look okay? (y / n")
