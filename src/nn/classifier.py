@@ -35,6 +35,7 @@ class DSBowlCLassifier:
     def _criterion(self, pred_mask, gt_mask):
         pred_mask = pred_mask.view(1,-1)
         gt_mask = gt_mask.view(1,-1)
+        print(type(pred_mask),type(gt_mask))
         # NOTE: explicitly calling forward() might not be
         # right here.
         l = losses_utils.IoU().forward(pred_mask,gt_mask)
@@ -56,7 +57,7 @@ class DSBowlCLassifier:
             im, mask = Variable(im), Variable(gt_mask)
 
             # forward
-            pred_mask    = self.net(im)
+            pred_mask = self.net(im)
             # NOTE: The immediately below isn't relevant to us
             # because we want our model to output probabilities.
             # probs = F.sigmoid(logits)
