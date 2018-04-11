@@ -74,8 +74,8 @@ class DatasetFetcher:
         # files = ["stage1_train.zip", "stage1_test.zip", "stage1_train_labels.csv.zip"]
         # NOTE: It's more concise to set train_data and test_data here than below.
         # That way, we can use these values in datasets_path as well.
-        self.train_data = destination_path + train_folder
-        self.test_data = destination_path + test_folder
+        self.train_data = destination_path + self.train_folder
+        self.test_data = destination_path + self.test_folder
         datasets_path = [self.train_data, self.test_data]
                         # TODO: we don't need "stage1_train_labels.csv" right now. later,
                         # we should implement a more dynamic way of inputting all data
