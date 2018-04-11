@@ -237,7 +237,15 @@ class DatasetFetcher:
                 y.append(t_full_mask)
 
         # # Check if training data looks alright
-        # ix = random.randint(0, len(ids_train_split))
+        ix = random.randint(0, len(ids_train_split))
+
+        random_im = X_train[ix].squeeze().numpy()
+        imshow(random_im)
+        plt.show()
+
+        random_im = y_train[ix].squeeze().numpy()
+        imshow(random_im)
+        plt.show()
 
         # imshow(X_train[ix].numpy())
         # plt.show()
@@ -256,9 +264,7 @@ class DatasetFetcher:
         # ONLY TESTING
         print(type(X_train),type(y_train))
         print(type(X_valid),type(y_valid))
-
-        print(y_train)
-
+        
         okay = input("Do the random images and their corresponding masks look okay? (y / n")
 
         if okay == 'y':
