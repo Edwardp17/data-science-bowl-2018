@@ -67,15 +67,22 @@ class DatasetFetcher:
         # path of the current file.
         # TODO: script_dir and destination_path could be more dynamic.
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        destination_path = os.path.join(script_dir, self.data_dir)
+        
+        # TODO: This is hacky, update.
+        os.chdir(self.data_dir)
+        self.train_data = str(os.getcwd())+'/'+self.train_folder
+        self.test_data = str(os.getcwd())+'/'+self.test_folder
+        os.chdir(script_dir)
+        # destination_path = os.path.join(script_dir, self.data_dir)
         # TODO: This needs to be more dynamic.
         # TODO: not sure why `files` is relevant. take a second look and
         # delete if unnecessary.
         # files = ["stage1_train.zip", "stage1_test.zip", "stage1_train_labels.csv.zip"]
         # NOTE: It's more concise to set train_data and test_data here than below.
         # That way, we can use these values in datasets_path as well.
-        self.train_data = destination_path + self.train_folder
-        self.test_data = destination_path + self.test_folder
+        # original_folder_path = os.getcwd()
+        # self.train_data = os.getcwd()
+        
         datasets_path = [self.train_data, self.test_data]
                         # TODO: we don't need "stage1_train_labels.csv" right now. later,
                         # we should implement a more dynamic way of inputting all data
