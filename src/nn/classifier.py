@@ -66,7 +66,6 @@ class DSBowlCLassifier:
             im, mask = Variable(im), Variable(gt_mask)
 
             # forward
-            print(">>>> STEPPING FORWARD <<<<")
             print(im.size())
             im_dims = len(im.size())
             if im_dims == 3:
@@ -92,7 +91,10 @@ class DSBowlCLassifier:
                     im = im.cuda()
 
             if im_dims == 4:
-
+                
+                sys.stdout.write("\033[0;32m") # green
+                print(">>>> STEPPING FORWARD <<<<")
+                sys.stdout.write("\033[0;0m") # reset
                 pred_mask = self.net(im)
                 # NOTE: The immediately below isn't relevant to us
                 # because we want our model to output probabilities.
@@ -109,7 +111,9 @@ class DSBowlCLassifier:
 
                 loss = self._criterion(pred_mask, Variable(gt_mask))
                 optimizer.zero_grad()
+                sys.stdout.write("\033[0;32m") # green
                 print(">>>> STEPPING BACKWARD <<<<")
+                sys.stdout.write("\033[0;0m") # reset
                 loss.backward()
                 optimizer.step()
 
@@ -122,6 +126,9 @@ class DSBowlCLassifier:
             # TODO: Printing statistics on our performance would be nice.
 
         print("Returning the mean of all losses..")
+        sys.stdout.write("\033[1;34m") # blue
+        print(all_losses)
+        sys.stdout.write("\033[0;0m") # reset
         return np.mean(all_losses)
 
     def _run_epoch(self, train_loader: DataLoader, valid_loader: DataLoader,\
