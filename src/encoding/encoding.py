@@ -13,6 +13,7 @@ class RunLengthEncoding():
         for file_name in files_to_pred_masks.keys():
             self.dict_encoded[file_name] = self.rle_encoding(files_to_pred_masks[file_name])
 
+        print(self.dict_encoded)
         df_encoded = pd.DataFrame.from_dict(self.dict_encoded,orient='index')
 
         print("Encoded predictions will look like..")
