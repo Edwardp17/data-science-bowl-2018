@@ -224,11 +224,13 @@ class DSBowlCLassifier:
             if im_dims == 4:
                 pred_mask = self.net(im)
 
-                # Convert tensor to numpy for return    
+                # Convert tensor to numpy for return
+                pred_mask = torch.clam(pred_mask,min=0,max=1)
+                pred_mask = torch.ceil(pred_mask)    
                 pred_mask = pred_mask.data.cpu().numpy()
 
                 # Convert any numbers above 0.5 to 1 - threshold is then set to 0.5
-                pred_mask = pred_mask > 0
+                # pred_mask = pred_mask > 0
 
                 files_to_pred_masks[file_names] = pred_mask
                 print("predicted {}/{} image masks".format(ind+1,total_img_num))
