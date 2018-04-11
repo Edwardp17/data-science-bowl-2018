@@ -76,6 +76,7 @@ class DSBowlCLassifier:
                 print("new image size:")
                 print(im.size())
                 im_dims = len(im.size())
+                im = im.type(torch.FloatTensor)
             elif im_dims == 2:
                 print("image has 2 dimensions")
                 im = im.unsqueeze(dim=1)
@@ -84,6 +85,7 @@ class DSBowlCLassifier:
                 print("new image size:")
                 print(im.size())
                 im_dims = len(im.size())
+                im = im.type(torch.FloatTensor)
 
             if im_dims == 4:
 
