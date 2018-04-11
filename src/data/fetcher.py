@@ -1,6 +1,7 @@
 import os
-
 import numpy as np
+
+import torch
 from PIL import Image
 from skimage.transform import resize
 from sklearn.model_selection import train_test_split
