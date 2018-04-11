@@ -62,9 +62,13 @@ class IoU(nn.Module):
         print(union.size())
 
         iou = intersection.div(union)
-        print(iou)
+        print("iou:")
+        print(iou.data)
 
         loss = 1 - iou
+        print("loss:")
+        print(loss)
+        print(type(loss))
         # iou = torch.div(torch.FloatTensor(torch.sum(intersection.data > 0)),torch.FloatTensor(torch.sum(union.data > 0)))
 
         # since we're building a loss function, we want it to be
