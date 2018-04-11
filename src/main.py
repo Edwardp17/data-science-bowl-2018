@@ -119,7 +119,7 @@ def main(predict=True):
         # output predictions to CSV. Note that the index here is required
         # because that is where the file names show up.
         print("Outputing CSV..")
-        df_predictions.to_csv('predictions.csv',index=True)
+        df_predictions.to_csv('/home/ubuntu/data-science-bowl-2018/src/predictions.csv',index=True)
         print("Done with predictions!")
 
 if __name__ == "__main__":
