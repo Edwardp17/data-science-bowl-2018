@@ -65,22 +65,42 @@ class DSBowlCLassifier:
 
             # forward
             print(im.size())
-            pred_mask = self.net(im)
-            # NOTE: The immediately below isn't relevant to us
-            # because we want our model to output probabilities.
-            # probs = F.sigmoid(logits)
-            # pred = (probs > threshold).float()
+            im_dims = len(im.size())
+            if im_dims == 3:
+                print("image has 3 dimensions")
+                im = im.unsqueeze(dim=1)
+                im = im.expand(-1,3,-1,-1)
+                print("new image size:")
+                print(im.size())
+            elif im_dims == 2:
+                print("image has 2 dimensions")
+                im = im.unsqueeze(dim=1)
+                im = im.unsqueeze(dim=1)
+                im = im.expand(-1,3,-1,-1)
+                print("new image size:")
+                print(im.size())
 
-            # backward + optimize
-            print("Calculating loss..")
-            loss = self._criterion(pred_mask, Variable(gt_mask))
-            optimizer.zero_grad()
-            print("Stepping backwards")
-            loss.backward()
-            optimizer.step()
+            if im_dims == 4:
 
-            print("Appending loss")
-            all_losses.append(loss)
+                pred_mask = self.net(im)
+                # NOTE: The immediately below isn't relevant to us
+                # because we want our model to output probabilities.
+                # probs = F.sigmoid(logits)
+                # pred = (probs > threshold).float()
+
+                # backward + optimize
+                print("Calculating loss..")
+                loss = self._criterion(pred_mask, Variable(gt_mask))
+                optimizer.zero_grad()
+                print("Stepping backwards")
+                loss.backward()
+                optimizer.step()
+
+                print("Appending loss")
+                all_losses.append(loss)
+
+            else:
+                print("couldn't get an image to 4 dimensions. not training on it.")
 
             # TODO: Printing statistics on our performance would be nice.
 
@@ -160,12 +180,33 @@ class DSBowlCLassifier:
             im = Variable(im)
             
             # forward
-            pred_mask = self.net(im)
+            print(im.size())
+            im_dims = len(im.size())
+            if im_dims == 3:
+                print("image has 3 dimensions")
+                im = im.unsqueeze(dim=1)
+                im = im.expand(-1,3,-1,-1)
+                print("new image size:")
+                print(im.size())
+            elif im_dims == 2:
+                print("image has 2 dimensions")
+                im = im.unsqueeze(dim=1)
+                im = im.unsqueeze(dim=1)
+                im = im.expand(-1,3,-1,-1)
+                print("new image size:")
+                print(im.size())
+            
+            if im_dims == 4:
+                pred_mask = self.net(im)
 
-            # Convert tensor to numpy for return    
-            pred_mask = pred_mask.numpy()
+                # Convert tensor to numpy for return    
+                pred_mask = pred_mask.numpy()
 
-            files_to_pred_masks[files_names] = pred_mask
-            print("predicted {}/{} image masks".format(ind+1,total_img_num))
+                files_to_pred_masks[files_names] = pred_mask
+                print("predicted {}/{} image masks".format(ind+1,total_img_num))
+
+            else:
+
+                print("couldn't get test image to 4 dimensions. not predicting")
         
         return files_to_pred_masks
