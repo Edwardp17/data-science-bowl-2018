@@ -15,6 +15,10 @@ class RunLengthEncoding():
 
         df_encoded = pd.DataFrame.from_dict(self.dict_encoded,orient='index')
 
+        print("Encoded predictions will look like..")
+        print(df_encoded.head())
+        print(df_encoded.shape)
+
         return df_encoded
 
     # referenced from here: https://www.kaggle.com/rakhlin/fast-run-length-encoding-python    
