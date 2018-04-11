@@ -176,6 +176,14 @@ class DatasetFetcher:
         ids_train_split = ids_train_split[:2]
         ids_valid_split = ids_valid_split[:2]
 
+        # ONLY TESTING
+        print(ids_train_split)
+        print(ids_valid_split)
+
+        okay = raw_input("Okay?")
+        if okay != 'y':
+            raise ValueError("Not okay")
+
         X_train = []
         y_train = []
         X_valid = []
@@ -221,8 +229,6 @@ class DatasetFetcher:
                     im_mask = Image.open(self.train_data+'/'+id+'/'+mask_folder+'/'+mask_file)
                     # convert mask from image to array
                     arr_mask = np.asarray(im_mask)
-                    print(mask_file)
-                    print(arr_mask)
                     # overlay this mask over every other mask for this image.
                     # given the nuclei areas are white and
                     # the areas with no nuclei are black, we can
@@ -233,6 +239,8 @@ class DatasetFetcher:
 
                     arr_full_mask = np.maximum(arr_full_mask,arr_mask)
                 
+                # ONLY TESTING
+                print(arr_full_mask)
                 # convert numpy array to tensor
                 t_full_mask = torch.from_numpy(arr_full_mask)
                 # append tensor to y
