@@ -111,7 +111,7 @@ class DSBowlCLassifier:
 
             for epoch in range(epochs):
                 print("training epoch "+str(epoch))
-                self._run_epoch(train_loader, valid_loader, optimizer, lr_scheduler, threshold, callbacks)
+                self._run_epoch(train_loader, valid_loader, optimizer)
 
         # TODO: Double check if we need this.
         # # If there are callback call their __call__ method and pass in some arguments
