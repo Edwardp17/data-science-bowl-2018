@@ -15,7 +15,7 @@ def main(predict=False):
     print("Setting hyperparameters..")
     im_height=512
     im_width=512
-    im_channels=2 # setting im_channels to 2 since masks are black and white
+    im_channels=3 # setting im_channels to 2 since masks are black and white
     print("im_height: "+str(im_height))
     print("im_width: "+str(im_width))
     print("im_channels: "+str(im_channels))
