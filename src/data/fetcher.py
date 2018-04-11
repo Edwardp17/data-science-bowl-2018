@@ -201,12 +201,30 @@ class DatasetFetcher:
                 # get the actual id of the image.
                 id = d_ids[i]
 
-                im = Image.open(self.train_data+'/'+id+'/'+im_folder+'/'+id+im_file_type)
+                im = Image.open(self.train_data+'/'+id+'/'+im_folder+'/'+id+im_file_type).convert('L')
                 arr_im = np.asarray(im)
+                # ONLY TESTING
+                print(id)
+                imshow(arr_im)
+                plt.show()
+                print("prev one is np array")
+                okay = input("Okay")
+                im.show()
+                print("prev one is actual")
+                okay = input("Okay")
 
                 # resize the image to standardize dimensions
                 # TODO: Check if `mode` indeed needs to be 'constant' here
-                arr_im = resize(arr_im, (im_dim_1,im_dim_2,im_dim_3),mode='constant', preserve_range=True)
+                
+                # arr_im = resize(arr_im, (im_dim_1,im_dim_2,im_dim_3),mode='constant', preserve_range=True)
+                arr_im = resize(arr_im, (im_dim_1,im_dim_2))
+                # ONLY TESTING
+                print("prev one is resized")
+                imshow(arr_im)
+                plt.show()
+                okay = input("Okay?")
+                if okay != 'y': raise ValueError()
+
                 # convert numpy array to tensor
                 t_im = torch.from_numpy(arr_im)
                 # append tensor to X
@@ -218,7 +236,7 @@ class DatasetFetcher:
                 # BONUS_TODO: [2] in for statement below could be dynamic
                 for mask_file in next(os.walk(self.train_data+'/'+id+'/'+mask_folder+'/'))[2]:
                     # load a mask
-                    im_mask = Image.open(self.train_data+'/'+id+'/'+mask_folder+'/'+mask_file)
+                    im_mask = Image.open(self.train_data+'/'+id+'/'+mask_folder+'/'+mask_file).convert('L')
                     # convert mask from image to array
                     arr_mask = np.asarray(im_mask)
                     # overlay this mask over every other mask for this image.
@@ -227,7 +245,7 @@ class DatasetFetcher:
                     # use np.maximum() here.
                     # first, we standardize the dimensions of the mask so it
                     # fits the image.
-                    arr_mask = resize(arr_mask,(im_dim_1,im_dim_2,im_dim_3),mode='constant',preserve_range=True)
+                    arr_mask = resize(arr_mask,(im_dim_1,im_dim_2))
 
                     arr_full_mask = np.maximum(arr_full_mask,arr_mask)
                 
@@ -236,35 +254,16 @@ class DatasetFetcher:
                 # append tensor to y
                 y.append(t_full_mask)
 
-        # # Check if training data looks alright
-        ix = random.randint(0, len(ids_train_split))
-
-        random_im = X_train[ix].squeeze().numpy()
-        imshow(random_im)
+        
+        # ONLY TESTING
+        imshow(X_train[0].numpy())
         plt.show()
-
-        random_im = y_train[ix].squeeze().numpy()
-        imshow(random_im)
-        plt.show()
-
-        # imshow(X_train[ix].numpy())
-        # plt.show()
-        # imshow(y_train[ix].numpy())
-        # # imshow(np.squeeze(y_train[ix].numpy()))
-        # plt.show()
-
-        # # Check if validation data looks alright
-        # ix = random.randint(0, len(ids_valid_split))
-        # imshow(X_valid[ix].numpy())
-        # plt.show()
-        # imshow(y_train[ix].numpy())
-        # # imshow(np.squeeze(y_valid[ix].numpy()))
-        # plt.show()
+        print(y_train)
 
         # ONLY TESTING
         print(type(X_train),type(y_train))
         print(type(X_valid),type(y_valid))
-        
+
         okay = input("Do the random images and their corresponding masks look okay? (y / n")
 
         if okay == 'y':
@@ -330,12 +329,12 @@ class DatasetFetcher:
                 # get the actual id of the image.
                 id = d_ids[i]
 
-                im = Image.open(self.test_data+'/'+id+'/'+im_folder+'/'+id+im_file_type)
+                im = Image.open(self.test_data+'/'+id+'/'+im_folder+'/'+id+im_file_type).convert('L')
                 arr_im = np.asarray(im)
 
                 # resize the image to standardize dimensions
                 # TODO: Check if `mode` indeed needs to be 'constant' here
-                arr_im = resize(arr_im, (im_dim_1,im_dim_2,im_dim_3),mode='constant', preserve_range=True)
+                arr_im = resize(arr_im, (im_dim_1,im_dim_2))
                 # convert numpy array to tensor
                 t_im = torch.from_numpy(arr_im)
                 # append tensor to X
