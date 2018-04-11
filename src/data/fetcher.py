@@ -204,29 +204,29 @@ class DatasetFetcher:
                 # append tensor to X
                 X.append(t_im)
             
-            # TODO: double check that we want np.bool here
-            arr_full_mask = np.zeros((im_dim_1,im_dim_2,im_dim_3),dtype=np.bool)
+                # TODO: double check that we want np.bool here
+                arr_full_mask = np.zeros((im_dim_1,im_dim_2,im_dim_3),dtype=np.bool)
 
-            # BONUS_TODO: [2] in for statement below could be dynamic
-            for mask_file in next(os.walk(self.train_data+'/'+id+'/'+mask_folder+'/')):
-                # load a mask
-                im_mask = Image.open(self.train_data+'/'+id+'/'+mask_folder+'/'+mask_file)
-                # convert mask from image to array
-                arr_mask = np.asarray(im_mask)
-                # overlay this mask over every other mask for this image.
-                # given the nuclei areas are white and
-                # the areas with no nuclei are black, we can
-                # use np.maximum() here.
-                # first, we standardize the dimensions of the mask so it
-                # fits the image.
-                arr_mask = resize(arr_mask,(im_dim_1,im_dim_2,im_dim_3),mode='constant',preserve_range=True)
+                # BONUS_TODO: [2] in for statement below could be dynamic
+                for mask_file in next(os.walk(self.train_data+'/'+id+'/'+mask_folder+'/'))[2]:
+                    # load a mask
+                    im_mask = Image.open(self.train_data+'/'+id+'/'+mask_folder+'/'+mask_file)
+                    # convert mask from image to array
+                    arr_mask = np.asarray(im_mask)
+                    # overlay this mask over every other mask for this image.
+                    # given the nuclei areas are white and
+                    # the areas with no nuclei are black, we can
+                    # use np.maximum() here.
+                    # first, we standardize the dimensions of the mask so it
+                    # fits the image.
+                    arr_mask = resize(arr_mask,(im_dim_1,im_dim_2,im_dim_3),mode='constant',preserve_range=True)
 
-                arr_full_mask = np.maximum(arr_full_mask,arr_mask)
-            
-            # convert numpy array to tensor
-            t_full_mask = torch.from_numpy(arr_full_mask)
-            # append tensor to y
-            y.append(t_full_mask)
+                    arr_full_mask = np.maximum(arr_full_mask,arr_mask)
+                
+                # convert numpy array to tensor
+                t_full_mask = torch.from_numpy(arr_full_mask)
+                # append tensor to y
+                y.append(t_full_mask)
 
         self.X_train = X_train
         self.y_train = y_train
