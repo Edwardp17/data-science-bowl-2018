@@ -15,7 +15,7 @@ class DatasetFetcher:
     # is the directory relative to the script_dir, which is the path
     # to this file.
     # train_folder and test_folder could also probably be more dynamic.
-    def __init__(self,,\
+    def __init__(self,\
         competition_name='data-science-bowl-2018',\
         data_dir='../../input/',\
         train_folder='stage1_train',\
@@ -48,6 +48,8 @@ class DatasetFetcher:
         self.y_train = None
         self.X_valid = None
         self.y_valid = None
+
+        self.X_test = None
 
     def download_dataset(self):
         """
@@ -164,14 +166,14 @@ class DatasetFetcher:
 
         # TODO: Clean this up.
         dataset_ids = {}
-        dataset_ids[X_train] = ids_train_split
+        dataset_ids['X_train'] = ids_train_split
         # datasets[y_train] = ids_train_split
-        dataset_ids[X_valid] = ids_valid_split
+        dataset_ids['X_valid'] = ids_valid_split
         # datasets[y_valid] = ids_valid_split
 
-        for X, y in zip([X_train,X_valid],[y_train,y_valid]):
+        for X_name, X, y in zip(['X_train','X_valid'],[X_train,X_valid],[y_train,y_valid]):
 
-            d_ids = dataset_ids[X]
+            d_ids = dataset_ids[X_name]
             # We use the range() here so that we can easily track progress and print
             # our progress to the user after every 10 images that are loaded.
             for i in range(len(d_ids)):
@@ -259,11 +261,11 @@ class DatasetFetcher:
 
         # TODO: Clean this up.
         dataset_ids = {}
-        dataset_ids[X_test] = test_ids
+        dataset_ids['X_test'] = test_ids
 
-        for X in X_test:
+        for X_name, X in zip(['X_test'],[X_test]):
 
-            d_ids = dataset_ids[X]
+            d_ids = dataset_ids[X_name]
             # We use the range() here so that we can easily track progress and print
             # our progress to the user after every 10 images that are loaded.
             for i in range(len(d_ids)):
