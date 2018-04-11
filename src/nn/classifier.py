@@ -71,7 +71,7 @@ class DSBowlCLassifier:
             im_dims = len(im.size())
             if im_dims == 3:
                 print("image has 3 dimensions")
-                im = im.unsqueeze(dim=1)
+                im = im.unsqueeze(dim=0)
                 im = im.expand(-1,3,-1,-1)
                 print("new image size:")
                 print(im.size())
@@ -81,7 +81,7 @@ class DSBowlCLassifier:
                     im = im.cuda()
             elif im_dims == 2:
                 print("image has 2 dimensions")
-                im = im.unsqueeze(dim=1)
+                im = im.unsqueeze(dim=0)
                 im = im.unsqueeze(dim=1)
                 im = im.expand(-1,3,-1,-1)
                 print("new image size:")
