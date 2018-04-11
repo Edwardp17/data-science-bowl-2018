@@ -174,8 +174,8 @@ class DatasetFetcher:
             ids_valid_split = []
         
         # ONLY TESTING
-        ids_train_split = ids_train_split[:2]
-        ids_valid_split = ids_valid_split[:2]
+        ids_train_split = ids_train_split[:20]
+        ids_valid_split = ids_valid_split[:20]
 
         X_train = []
         y_train = []
@@ -300,7 +300,7 @@ class DatasetFetcher:
 
         # ONLY TESTING
         dataset_ids = {}
-        dataset_ids['X_test'] = test_ids[:2]
+        dataset_ids['X_test'] = test_ids[:20]
 
         # set Image transforms
         im_transform = Compose([Grayscale(num_output_channels=im_dim_3),Resize((im_dim_1,im_dim_2)),ToTensor()])
