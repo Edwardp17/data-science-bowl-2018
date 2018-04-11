@@ -13,7 +13,7 @@ class RunLengthEncoding():
         for file_name in files_to_pred_masks.keys():
             self.dict_encoded[file_name] = self.rle_encoding(files_to_pred_masks[file_name])
 
-        df_encoded = pd.DataFrame.from_dict(dict_encoded,orient='index')
+        df_encoded = pd.DataFrame.from_dict(self.dict_encoded,orient='index')
 
         return df_encoded
 
