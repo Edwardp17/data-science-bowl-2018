@@ -192,7 +192,7 @@ class DatasetFetcher:
                 # get the actual id of the image.
                 id = d_ids[i]
 
-                im = Image.open(self.train_data+'/'+im_folder+'/'+id+im_file_type)
+                im = Image.open(self.train_data+'/'+id+'/'+im_folder+'/'+id+im_file_type)
                 arr_im = np.asarray(im)
 
                 # resize the image to standardize dimensions
@@ -207,9 +207,9 @@ class DatasetFetcher:
             arr_full_mask = np.zeros((im_dim_1,im_dim_2,im_dim_3),dtype=np.bool)
 
             # BONUS_TODO: [2] in for statement below could be dynamic
-            for mask_file in next(os.walk(self.train_data+'/'+mask_folder+'/'))[2]:
+            for mask_file in next(os.walk(self.train_data+'/'+id+'/'+mask_folder+'/')):
                 # load a mask
-                im_mask = Image.open(self.train_data+'/'+mask_folder+'/'+mask_file)
+                im_mask = Image.open(self.train_data+'/'+id+'/'+mask_folder+'/'+mask_file)
                 # convert mask from image to array
                 arr_mask = np.asarray(im_mask)
                 # overlay this mask over every other mask for this image.
@@ -284,7 +284,7 @@ class DatasetFetcher:
                 # get the actual id of the image.
                 id = d_ids[i]
 
-                im = Image.open(self.test_data+'/'+im_folder+'/'+id+im_file_type)
+                im = Image.open(self.test_data+'/'+id+'/'+im_folder+'/'+id+im_file_type)
                 arr_im = np.asarray(im)
 
                 # resize the image to standardize dimensions
