@@ -221,6 +221,8 @@ class DatasetFetcher:
                     im_mask = Image.open(self.train_data+'/'+id+'/'+mask_folder+'/'+mask_file)
                     # convert mask from image to array
                     arr_mask = np.asarray(im_mask)
+                    print(mask_file)
+                    print(arr_mask)
                     # overlay this mask over every other mask for this image.
                     # given the nuclei areas are white and
                     # the areas with no nuclei are black, we can
