@@ -32,7 +32,7 @@ class RunLengthEncoding():
         x: numpy array of shape (height, width), 1 - mask, 0 - background
         Returns run length as list
         '''
-        dots = np.where(x.T.flatten()==1)[0] # .T sets Fortran order down-then-right
+        dots = np.where(x.T.flatten()>0.10)[0] # .T sets Fortran order down-then-right
         run_lengths = []
         prev = -2
         for b in dots:
