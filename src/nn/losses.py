@@ -20,14 +20,23 @@ class IoU(nn.Module):
                 pred_mask: (Tensor)
                 gt_mask: (Tensor)
         """
+
+        # _assert_no_grad(target)
         
         intersection = torch.min(pred_mask,gt_mask)
         union = torch.max(pred_mask,gt_mask)
 
-        intersection = float(torch.sum(intersection > 0))
-        print(union)
-        union = float(torch.sum(union > 0))
-        print(union)
+        # intersection = intersection.type(torch.LongTensor)
+        # union = union.type(torch.LongTensor)
+
+        # print(torch.sum(intersection.data > 0))
+        # print(torch.sum(union.data > 0))
+        # intersection = torch.sum(intersection > 0)
+        
+        # print(union)
+        # union = union > 0
+        # print(union)
+        # print(union.sum())
         # # intersection = Variable(torch.min(pred_mask.data.cpu(),gt_mask.data.cpu()))
         # # union = Variable(torch.max(pred_mask.data.cpu(),gt_mask.data.cpu()))
         # intersection = torch.clamp(pred_mask,max=gt_mask)
@@ -40,10 +49,19 @@ class IoU(nn.Module):
         # print("intersection: "+str(torch.sum(intersection)))
         # print("union: "+str(torch.sum(union)))
 
-        iou = torch.sum(intersection > 0) / torch.sum(union > 0)
+        # iou = torch.sum(intersection.data > 0) / torch.sum(union.data > 0)
+        intersection = intersection > 0
+        union = union > 0
+        iou = intersection.div(union)
+        print(iou)
+        iou = torch.sum(iou)
+        print(iou)
+
+        loss = 1 - iou
+        # iou = torch.div(torch.FloatTensor(torch.sum(intersection.data > 0)),torch.FloatTensor(torch.sum(union.data > 0)))
 
         # since we're building a loss function, we want it to be
         # the opposite of what we're optimizing for.
-        print(type(iou))
-        print(iou)
-        return (1 - iou)
+        # print(type(iou))
+        # print(iou)
+        return loss
