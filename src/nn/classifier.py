@@ -227,6 +227,9 @@ class DSBowlCLassifier:
                 # Convert tensor to numpy for return    
                 pred_mask = pred_mask.data.cpu().numpy()
 
+                # Convert any numbers above 0.5 to 1 - threshold is then set to 0.5
+                pred_mask = pred_mask > 1
+
                 files_to_pred_masks[file_names] = pred_mask
                 print("predicted {}/{} image masks".format(ind+1,total_img_num))
 
