@@ -202,7 +202,7 @@ class DSBowlCLassifier:
                 pred_mask = self.net(im)
 
                 # Convert tensor to numpy for return    
-                pred_mask = pred_mask.numpy()
+                pred_mask = pred_mask.data.numpy()
 
                 files_to_pred_masks[files_names] = pred_mask
                 print("predicted {}/{} image masks".format(ind+1,total_img_num))
