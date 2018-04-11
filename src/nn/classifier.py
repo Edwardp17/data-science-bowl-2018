@@ -226,7 +226,8 @@ class DSBowlCLassifier:
 
                 # Convert tensor to numpy for return
                 pred_mask = torch.clamp(pred_mask,min=0,max=1)
-                pred_mask = torch.ceil(pred_mask)    
+                # 0.5 threshold
+                pred_mask = pred_mask > 0.5
                 pred_mask = pred_mask.data.cpu().numpy()
 
                 # Convert any numbers above 0.5 to 1 - threshold is then set to 0.5
