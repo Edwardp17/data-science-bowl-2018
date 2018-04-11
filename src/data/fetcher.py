@@ -172,6 +172,10 @@ class DatasetFetcher:
             ids_train_split = train_ids
             ids_valid_split = []
         
+        # ONLY TESTING
+        ids_train_split = ids_train_split[:5]
+        ids_valid_split = ids_valid_split[:5]
+
         X_train = []
         y_train = []
         X_valid = []
@@ -179,9 +183,9 @@ class DatasetFetcher:
 
         # TODO: Clean this up.
         dataset_ids = {}
-        dataset_ids['X_train'] = ids_train_split[:10]
+        dataset_ids['X_train'] = ids_train_split
         # datasets[y_train] = ids_train_split
-        dataset_ids['X_valid'] = ids_valid_split[:10]
+        dataset_ids['X_valid'] = ids_valid_split
         # datasets[y_valid] = ids_valid_split
 
         for X_name, X, y in zip(['X_train','X_valid'],[X_train,X_valid],[y_train,y_valid]):
