@@ -64,23 +64,29 @@ class DSBowlCLassifier:
             # pred = (probs > threshold).float()
 
             # backward + optimize
-            loss = self._criterion(pred_mask, gt_mask)
+            print("Calculating loss..")
+            loss = self._criterion(pred_mask, Variable(gt_mask))
             optimizer.zero_grad()
+            print("Stepping backwards")
             loss.backward()
             optimizer.step()
 
+            print("Appending loss")
             all_losses.append(loss)
 
             # TODO: Printing statistics on our performance would be nice.
 
+        print("Returning the mean of all losses..")
         return np.mean(all_losses)
 
     def _run_epoch(self, train_loader: DataLoader, valid_loader: DataLoader,\
         optimizer):
 
         # switch to train mode
+        
         self.net.train()
 
+        print("Training model..")
         train_loss = self._train_epoch(train_loader,optimizer)
 
         # switch to evaluate mode
@@ -106,13 +112,14 @@ class DSBowlCLassifier:
         if self.use_cuda:
             self.net.cuda()
             # TODO: Figure out net.parameters here.
-            optimizer = optim.Adam(self.net.parameters())
-            # NOTE: We can implement lr_scheduler later.
-            # lr_scheduler = ReduceLROnPlateau(optimizer, 'min', patience=2, verbose=True, min_lr=1e-7)
+        
+        optimizer = optim.Adam(self.net.parameters())
+        # NOTE: We can implement lr_scheduler later.
+        # lr_scheduler = ReduceLROnPlateau(optimizer, 'min', patience=2, verbose=True, min_lr=1e-7)
 
-            for epoch in range(epochs):
-                print("training epoch "+str(epoch))
-                self._run_epoch(train_loader, valid_loader, optimizer)
+        for epoch in range(epochs):
+            print("training epoch "+str(epoch))
+            self._run_epoch(train_loader, valid_loader, optimizer)
 
         # TODO: Double check if we need this.
         # # If there are callback call their __call__ method and pass in some arguments
