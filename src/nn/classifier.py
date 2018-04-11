@@ -64,13 +64,6 @@ class DSBowlCLassifier:
             im, mask = Variable(im), Variable(gt_mask)
 
             # forward
-            im_dims = len(im.size())
-            while im_dims < 4:
-                im = im.unsqueeze(0)
-                im_dims = len(im.size())
-                print("im_dims: "+str(im_dims))
-            
-            print("im_dims: "+str(im_dims))
             pred_mask = self.net(im)
             # NOTE: The immediately below isn't relevant to us
             # because we want our model to output probabilities.
@@ -166,13 +159,6 @@ class DSBowlCLassifier:
             im = Variable(im)
             
             # forward
-            im_dims = len(im.size())
-            while im_dims < 4:
-                im = im.unsqueeze(0)
-                im_dims = len(im.size())
-                print("im_dims: "+str(im_dims))
-            
-            print("im_dims: "+str(im_dims))
             pred_mask = self.net(im)
 
             # Convert tensor to numpy for return    
