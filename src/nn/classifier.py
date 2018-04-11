@@ -64,7 +64,6 @@ class DSBowlCLassifier:
             im, mask = Variable(im), Variable(gt_mask)
 
             # forward
-            print(im.size())
             pred_mask = self.net(im)
             # NOTE: The immediately below isn't relevant to us
             # because we want our model to output probabilities.

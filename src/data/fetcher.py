@@ -212,6 +212,19 @@ class DatasetFetcher:
                 # Resize
                 # Conversion from Image to Tensor
                 t_im = im_transform(im)
+                
+                im_dims = len(t_im.size())
+                if im_dims < 4:
+                    print('loaded image with less than 4 dimensions. transforming')
+                    print('image originally has : '+str(im_dims))
+
+                    # add a new dimension into index 1
+                    t_im = t_im.unsqueeze(dim=1)
+                    t_im = t_im.expand(-1,im_dim_3,-1,-1)
+
+                    im_dims = len(t_im.size())
+                    print('transformed image has : '+str(im_dims))
+                    print(t_im.size())
 
                 # append tensor to X
                 X.append(t_im)
