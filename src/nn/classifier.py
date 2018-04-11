@@ -67,6 +67,7 @@ class DSBowlCLassifier:
             im_dims = len(im.size())
             while im_dims < 4:
                 im = im.unsqueeze(0)
+                im_dims = len(im.size())
                 print("im_dims: "+str(im_dims))
             
             print("im_dims: "+str(im_dims))
@@ -168,6 +169,7 @@ class DSBowlCLassifier:
             im_dims = len(im.size())
             while im_dims < 4:
                 im = im.unsqueeze(0)
+                im_dims = len(im.size())
                 print("im_dims: "+str(im_dims))
             
             print("im_dims: "+str(im_dims))
