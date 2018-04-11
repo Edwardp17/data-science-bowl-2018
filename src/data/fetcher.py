@@ -173,8 +173,8 @@ class DatasetFetcher:
             ids_valid_split = []
         
         # ONLY TESTING
-        ids_train_split = ids_train_split[:5]
-        ids_valid_split = ids_valid_split[:5]
+        ids_train_split = ids_train_split[:2]
+        ids_valid_split = ids_valid_split[:2]
 
         X_train = []
         y_train = []
@@ -238,16 +238,16 @@ class DatasetFetcher:
 
         # Check if training data looks alright
         ix = random.randint(0, len(ids_train_split))
-        imshow(X_train[ix])
+        imshow(X_train[ix].numpy())
         plt.show()
-        imshow(np.squeeze(y_train[ix]))
+        imshow(np.squeeze(y_train[ix].numpy()))
         plt.show()
 
         # Check if validation data looks alright
         ix = random.randint(0, len(ids_valid_split))
-        imshow(X_valid[ix])
+        imshow(X_valid[ix].numpy())
         plt.show()
-        imshow(np.squeeze(y_valid[ix]))
+        imshow(np.squeeze(y_valid[ix].numpy()))
         plt.show()
 
         okay = raw_input("Do the random images and their corresponding masks look okay? (y / n")
