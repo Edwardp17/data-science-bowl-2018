@@ -225,7 +225,7 @@ class DSBowlCLassifier:
                 pred_mask = self.net(im)
 
                 # Convert tensor to numpy for return
-                pred_mask = torch.clam(pred_mask,min=0,max=1)
+                pred_mask = torch.clamp(pred_mask,min=0,max=1)
                 pred_mask = torch.ceil(pred_mask)    
                 pred_mask = pred_mask.data.cpu().numpy()
 
