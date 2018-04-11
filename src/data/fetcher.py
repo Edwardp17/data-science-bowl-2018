@@ -213,6 +213,8 @@ class DatasetFetcher:
                 # Conversion from Image to Tensor
                 t_im = im_transform(im)
 
+                print(t_im.size())
+
                 # append tensor to X
                 X.append(t_im)
             
