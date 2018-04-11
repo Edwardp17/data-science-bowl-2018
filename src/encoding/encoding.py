@@ -12,7 +12,10 @@ class RunLengthEncoding():
     def encode_predictions(self, files_to_pred_masks):
         print(files_to_pred_masks.values())
         for file_name in files_to_pred_masks.keys():
-            self.dict_encoded[file_name] = self.rle_encoding(files_to_pred_masks[file_name])
+            mask = files_to_pred_masks[file_name]
+            print("mask type")
+            print(type(mask))
+            self.dict_encoded[file_name] = self.rle_encoding(mask)
 
         print(self.dict_encoded)
         df_encoded = pd.DataFrame.from_dict(self.dict_encoded,orient='index')
