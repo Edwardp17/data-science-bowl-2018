@@ -66,18 +66,18 @@ class DSBowlCLassifier:
             im, mask = Variable(im), Variable(gt_mask)
 
             # forward
-            print(">>>> STEPPING FORWARD <<<<"+'\033[92m')
+            print(">>>> STEPPING FORWARD <<<<")
             print(im.size())
             im_dims = len(im.size())
             if im_dims == 3:
-                print("image has 3 dimensions"+'\033[93m')
+                print("image has 3 dimensions")
                 im = im.unsqueeze(dim=1)
                 im = im.expand(-1,3,-1,-1)
                 print("new image size:")
                 print(im.size())
                 im_dims = len(im.size())
             elif im_dims == 2:
-                print("image has 2 dimensions"+'\033[93m')
+                print("image has 2 dimensions")
                 im = im.unsqueeze(dim=1)
                 im = im.unsqueeze(dim=1)
                 im = im.expand(-1,3,-1,-1)
@@ -97,7 +97,7 @@ class DSBowlCLassifier:
                 print("Calculating loss..")
                 loss = self._criterion(pred_mask, Variable(gt_mask))
                 optimizer.zero_grad()
-                print(">>>> STEPPING BACKWARD <<<<"+'\033[92m')
+                print(">>>> STEPPING BACKWARD <<<<")
                 loss.backward()
                 optimizer.step()
 
@@ -105,7 +105,7 @@ class DSBowlCLassifier:
                 all_losses.append(loss)
 
             else:
-                print("couldn't get an image to 4 dimensions. not training on it."+'\033[91m')
+                print("couldn't get an image to 4 dimensions. not training on it.")
 
             # TODO: Printing statistics on our performance would be nice.
 
