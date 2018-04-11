@@ -180,7 +180,7 @@ class DatasetFetcher:
         print(ids_train_split)
         print(ids_valid_split)
 
-        okay = raw_input("Okay?")
+        okay = input("Okay?")
         if okay != 'y':
             raise ValueError("Not okay")
 
@@ -260,7 +260,7 @@ class DatasetFetcher:
         imshow(np.squeeze(y_valid[ix].numpy()))
         plt.show()
 
-        okay = raw_input("Do the random images and their corresponding masks look okay? (y / n")
+        okay = input("Do the random images and their corresponding masks look okay? (y / n")
 
         if okay == 'y':
             print("Thanks! Continuing..")
