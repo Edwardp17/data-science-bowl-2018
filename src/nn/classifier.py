@@ -101,6 +101,12 @@ class DSBowlCLassifier:
 
                 # backward + optimize
                 print("Calculating loss..")
+                
+                # manage gt_mask variable
+                gt_mask = gt_mask.type(torch.FloatTensor)
+                if self.use_cuda:
+                    gt_mask.cuda()
+                    
                 loss = self._criterion(pred_mask, Variable(gt_mask))
                 optimizer.zero_grad()
                 print(">>>> STEPPING BACKWARD <<<<")
