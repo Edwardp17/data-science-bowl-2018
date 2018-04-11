@@ -6,15 +6,17 @@ from torch.utils.data import DataLoader
 
 # custom classes
 from data.fetcher import DatasetFetcher
+import nn.classifier
 import nn.unet_nb as unet
 from encoding.encoding import RunLengthEncoding
 
 
-def main(predict=False):
+def main(predict=True):
     # Hyperparameters
     print("Setting hyperparameters..")
-    im_height=512
-    im_width=512
+    im_height=256
+    im_width=256
+    # NOTE: im_channels is no longer incorporated in resizing images - images are converted to grayscale during resizing.
     im_channels=3 # setting im_channels to 2 since masks are black and white
     print("im_height: "+str(im_height))
     print("im_width: "+str(im_width))
@@ -81,28 +83,31 @@ def main(predict=False):
     # together in the same tuple and then input them into a DataLoader.
     print("Loading training data..")
     train_ds = (X_train, y_train)
-    train_loader = DataLoader(train_ds,pin_memory=use_cuda)
+    train_loader = DataLoader(dataset=train_ds,batch_size=1,pin_memory=use_cuda)
 
     # same with validation set as with training set
     print("Loading validation data..")
     valid_ds = (X_valid, y_valid)
-    valid_loader = DataLoader(valid_ds,pin_memory=use_cuda)
+    valid_loader = DataLoader(dataset=valid_ds,batch_size=1,pin_memory=use_cuda)
 
     print("Training on {} samples and validating on {} samples.."
           .format(len(train_loader.dataset), len(valid_loader.dataset)))
 
     classifier.train(train_loader, valid_loader, epochs)
+    print("Done training!")
 
     # TODO: The prediction section is still not fully complete
     if predict == True:
         print("Loading the test dataset..")
-        test_ds = ds_fetcher.get_test_files(im_dim_3=im_channels)
-        test_loader = DataLoader(test_ds,pin_memory=use_cuda)
+        test_ds, file_names = ds_fetcher.get_test_files(im_dim_3=im_channels)
+        test_loader = DataLoader(test_ds,batch_size=1,pin_memory=use_cuda,shuffle=False)
 
         # Predict and save
         # returns a dict of file names and numpy array prediction masks
-        files_to_pred_masks = classifier.predict(test_loader)
+        print("Making predictions..")
+        files_to_pred_masks = classifier.predict(test_loader, file_names)
 
+        print("Encoding predictions..")
         # TODO: We may need to turn predictions from classifications here,
         # but I don't full understand how that factors in.
         # I'm looking at the "Check RLE" section of this notebook, for
@@ -112,7 +117,9 @@ def main(predict=False):
         df_predictions = encoder.encode_predictions(files_to_pred_masks)
         # output predictions to CSV. Note that the index here is required
         # because that is where the file names show up.
+        print("Outputing CSV..")
         df_predictions.to_csv('predictions.csv',index=True)
+        print("Done with predictions!")
 
 if __name__ == "__main__":
     main()

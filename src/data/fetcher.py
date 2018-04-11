@@ -3,6 +3,7 @@ import numpy as np
 import random
 
 import torch
+from torchvision.transforms import Compose, Grayscale, Resize, ToTensor, ToPILImage
 from PIL import Image
 from skimage.transform import resize
 from skimage.io import imshow
@@ -143,7 +144,7 @@ class DatasetFetcher:
     # NOTE: Dimensions have been changed to convert each image to an RGBA 512x512 square.
     # TODO: Update dimension variable names to be more intuitive.
     def get_train_files(self, validation_size=0.2,im_folder='images',mask_folder='masks',im_file_type='.png',\
-        im_dim_1=512,im_dim_2=512,im_dim_3=4):
+        im_dim_1=256,im_dim_2=256,im_dim_3=3):
         """
         Args:
             validation_size (float):
@@ -188,6 +189,9 @@ class DatasetFetcher:
         dataset_ids['X_valid'] = ids_valid_split
         # datasets[y_valid] = ids_valid_split
 
+        # set Image transforms
+        im_transform = Compose([Grayscale(num_output_channels=im_dim_3),Resize((im_dim_1,im_dim_2)),ToTensor()])
+
         for X_name, X, y in zip(['X_train','X_valid'],[X_train,X_valid],[y_train,y_valid]):
 
             d_ids = dataset_ids[X_name]
@@ -201,42 +205,24 @@ class DatasetFetcher:
                 # get the actual id of the image.
                 id = d_ids[i]
 
-                im = Image.open(self.train_data+'/'+id+'/'+im_folder+'/'+id+im_file_type).convert('L')
-                arr_im = np.asarray(im)
-                # ONLY TESTING
-                print(id)
-                imshow(arr_im)
-                plt.show()
-                print("prev one is np array")
-                okay = input("Okay")
-                im.show()
-                print("prev one is actual")
-                okay = input("Okay")
-
-                # resize the image to standardize dimensions
-                # TODO: Check if `mode` indeed needs to be 'constant' here
+                im = Image.open(self.train_data+'/'+id+'/'+im_folder+'/'+id+im_file_type)
                 
-                # arr_im = resize(arr_im, (im_dim_1,im_dim_2,im_dim_3),mode='constant', preserve_range=True)
-                arr_im = resize(arr_im, (im_dim_1,im_dim_2))
-                # ONLY TESTING
-                print("prev one is resized")
-                imshow(arr_im)
-                plt.show()
-                okay = input("Okay?")
-                if okay != 'y': raise ValueError()
+                # im_transform performs 3 transformations:
+                # Grayscale: maintaining 3 output channels
+                # Resize
+                # Conversion from Image to Tensor
+                t_im = im_transform(im)
 
-                # convert numpy array to tensor
-                t_im = torch.from_numpy(arr_im)
                 # append tensor to X
                 X.append(t_im)
             
                 # TODO: double check that we want np.bool here
-                arr_full_mask = np.zeros((im_dim_1,im_dim_2,im_dim_3),dtype=np.bool)
+                arr_full_mask = np.zeros((im_dim_1,im_dim_2),dtype=np.bool)
 
                 # BONUS_TODO: [2] in for statement below could be dynamic
                 for mask_file in next(os.walk(self.train_data+'/'+id+'/'+mask_folder+'/'))[2]:
                     # load a mask
-                    im_mask = Image.open(self.train_data+'/'+id+'/'+mask_folder+'/'+mask_file).convert('L')
+                    im_mask = Image.open(self.train_data+'/'+id+'/'+mask_folder+'/'+mask_file)
                     # convert mask from image to array
                     arr_mask = np.asarray(im_mask)
                     # overlay this mask over every other mask for this image.
@@ -254,23 +240,20 @@ class DatasetFetcher:
                 # append tensor to y
                 y.append(t_full_mask)
 
-        
-        # ONLY TESTING
-        imshow(X_train[0].numpy())
-        plt.show()
-        print(y_train)
+        # Check to make sure an image and mask pair looks good.
+        # ix = random.randint(0, len(ids_train_split))
+        # print(len(ids_train_split))
+        # print(ix)
+        # toImage = ToPILImage()
+        # toImage(X_train[ix]).show()
+        # imshow(y_train[ix].float().numpy())
+        # plt.show()
 
-        # ONLY TESTING
-        print(type(X_train),type(y_train))
-        print(type(X_valid),type(y_valid))
+        # okay = input("Do the random images and their corresponding masks look okay? (yes / no) : ")
 
-        okay = input("Do the random images and their corresponding masks look okay? (y / n")
-
-        if okay == 'y':
-            print("Thanks! Continuing..")
-        else:
-            print("Aborting! Don't panic.")
-            raise ValueError("User did not specify random image and mask looked okay.")
+        # if okay == 'yes':
+        #     print("Thanks! Continuing..")
+        # else okay == 'no':
 
         self.X_train = X_train
         self.y_train = y_train
@@ -298,7 +281,7 @@ class DatasetFetcher:
     #     return np.array(ret)
 
     def get_test_files(self,im_folder='images',im_file_type='.png',\
-        im_dim_1=512,im_dim_2=512,im_dim_3=4):
+        im_dim_1=256,im_dim_2=256,im_dim_3=3):
 
         # validate that test_ids is not None
         if self.test_ids == None:
@@ -311,12 +294,16 @@ class DatasetFetcher:
         #     train_ids = rnd.ravel()
 
         X_test = []
+        X_test_file_names = []
 
-        # TODO: Clean this up.
+        # ONLY TESTING
         dataset_ids = {}
-        dataset_ids['X_test'] = test_ids
+        dataset_ids['X_test'] = test_ids[:2]
 
-        for X_name, X in zip(['X_test'],[X_test]):
+        # set Image transforms
+        im_transform = Compose([Grayscale(num_output_channels=im_dim_3),Resize((im_dim_1,im_dim_2)),ToTensor()])
+
+        for X_name, X, X_file_name in zip(['X_test'],[X_test],[X_test_file_names]):
 
             d_ids = dataset_ids[X_name]
             # We use the range() here so that we can easily track progress and print
@@ -329,16 +316,16 @@ class DatasetFetcher:
                 # get the actual id of the image.
                 id = d_ids[i]
 
-                im = Image.open(self.test_data+'/'+id+'/'+im_folder+'/'+id+im_file_type).convert('L')
-                arr_im = np.asarray(im)
+                im = Image.open(self.test_data+'/'+id+'/'+im_folder+'/'+id+im_file_type)
 
-                # resize the image to standardize dimensions
-                # TODO: Check if `mode` indeed needs to be 'constant' here
-                arr_im = resize(arr_im, (im_dim_1,im_dim_2))
-                # convert numpy array to tensor
-                t_im = torch.from_numpy(arr_im)
-                # append tensor to X
+                # im_transform performs 3 transformations:
+                # Grayscale: maintaining 3 output channels
+                # Resize
+                # Conversion from Image to Tensor
+                t_im = im_transform(im)
+                
                 X.append(t_im)
+                X_file_name.append(id)
 
         self.X_test = X_test
 
@@ -346,6 +333,6 @@ class DatasetFetcher:
         # NOTE: If we change the code downstream, this function doesn't need to return anything.
         # We can get the same information by referencing the DatasetFetcher's relevant attributes.
         # NOTE: the images are resized in get_train_files.,
-        return X_test
+        return X_test, X_test_file_names
 
         #NUTBUTTER APPROVED

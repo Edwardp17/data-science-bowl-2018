@@ -60,6 +60,7 @@ class ExpandingPath(nn.Module):
             The concatenated tensor
         """
         c = (bypass.size()[2] - upsampled.size()[2]) // 2
+        
         bypass = F.pad(bypass, (-c, -c, -c, -c))
 
         return torch.cat((upsampled, bypass), 1)
@@ -67,6 +68,7 @@ class ExpandingPath(nn.Module):
     def forward(self, x, down_tensor):
         x = self.upSample(x)
         x = self.upconvr(x)
+        print(x.size(),down_tensor.size())
         x = self._crop_concat(x, down_tensor)
         x = self.convr1(x)
         x = self.convr2(x)

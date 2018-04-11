@@ -1,6 +1,7 @@
 import torch
 import torch.optim as optim
 from torch.autograd import Variable
+from torch.utils.data import DataLoader
 
 import nn.losses as losses_utils
 
@@ -92,7 +93,7 @@ class DSBowlCLassifier:
 
     def train(self, train_loader: DataLoader, valid_loader: DataLoader,\
         epochs):
-         """
+        """
             Trains the neural net
         Args:
             train_loader (DataLoader): The Dataloader for training
@@ -102,7 +103,6 @@ class DSBowlCLassifier:
             str, None: The path where the model was saved, or None if it wasn't saved
         """
         if self.use_cuda:
-            # TODO: Make sure net has cuda.
             self.net.cuda()
             # TODO: Figure out net.parameters here.
             optimizer = optim.Adam(self.net.parameters())
@@ -122,7 +122,7 @@ class DSBowlCLassifier:
         #            )
 
 
-    def predict(self, test_loader):
+    def predict(self, test_loader, file_names):
         """
             Launch the prediction on the given loader and pass
             each predictions to the given callbacks.
@@ -135,14 +135,13 @@ class DSBowlCLassifier:
 
         # pred_masks = []
         files_to_pred_masks = {}
-        for ind, (im, file_names) in enumerate(test_loader):
+        for ind, (im, file_names) in enumerate(zip(test_loader,file_names)):
 
             if self.use_cuda:
                 im = im.cuda()
 
             im = Variable(im)
-
-            # forward
+            
             # forward
             pred_mask = self.net(im)
 
