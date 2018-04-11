@@ -110,6 +110,7 @@ class DSBowlCLassifier:
             # lr_scheduler = ReduceLROnPlateau(optimizer, 'min', patience=2, verbose=True, min_lr=1e-7)
 
             for epoch in range(epochs):
+                print("training epoch "+str(epoch))
                 self._run_epoch(train_loader, valid_loader, optimizer, lr_scheduler, threshold, callbacks)
 
         # TODO: Double check if we need this.
@@ -133,10 +134,10 @@ class DSBowlCLassifier:
         # Switch to evaluation mode
         self.net.eval()
 
-        # pred_masks = []
         files_to_pred_masks = {}
+        total_img_num = len(test_loader)
         for ind, (im, file_names) in enumerate(zip(test_loader,file_names)):
-
+            
             if self.use_cuda:
                 im = im.cuda()
 
@@ -149,5 +150,6 @@ class DSBowlCLassifier:
             pred_mask = pred_mask.numpy()
 
             files_to_pred_masks[files_names] = pred_mask
+            print("predicted {}/{} image masks".format(ind+1,total_img_num))
         
         return files_to_pred_masks

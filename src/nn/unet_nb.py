@@ -66,6 +66,7 @@ class ExpandingPath(nn.Module):
             ceiling = int((c // 1) + 1)
             bypass = F.pad(bypass,(-floor, -ceiling, -floor, -ceiling))
         else:
+            c = int(c)
             bypass = F.pad(bypass, (-c, -c, -c, -c))
 
         return torch.cat((upsampled, bypass), 1)
