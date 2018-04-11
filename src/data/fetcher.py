@@ -5,6 +5,7 @@ import random
 import torch
 from PIL import Image
 from skimage.transform import resize
+from skimage.io import imshow
 from sklearn.model_selection import train_test_split
 
 import matplotlib.pyplot as plt
