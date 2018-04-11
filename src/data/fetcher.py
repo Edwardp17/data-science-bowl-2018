@@ -266,6 +266,7 @@ class DatasetFetcher:
         # NOTE: If we change the code downstream, this function doesn't need to return anything.
         # We can get the same information by referencing the DatasetFetcher's relevant attributes.
         # NOTE: the images are resized in get_train_files.,
+        print(len(X_train),len(y_train),len(X_valid),len(y_valid))
         return X_train, y_train, X_valid, y_valid
 
     # TODO: Implement get_test_files
