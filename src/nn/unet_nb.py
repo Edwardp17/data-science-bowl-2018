@@ -43,10 +43,10 @@ class ContractingPath(nn.Module):
 #TODO: Not entirely sure we need upsampling and Transposed Convolution,
 #  we may only just need one of them
 class ExpandingPath(nn.Module):
-    def __init__(self, in_channels, out_channels, upsample_size):
+    def __init__(self, in_channels, out_channels, upsample_size,scale_factor=None):
         super(ExpandingPath, self).__init__()
 
-        self.upSample = nn.Upsample(size=upsample_size, scale_factor=(2, 2), mode="bilinear")
+        self.upSample = nn.Upsample(size=upsample_size, scale_factor=scale_factor, mode="bilinear")
         self.upconvr = nn.ConvTranspose2d(in_channels, out_channels, kernel_size = (2,2), stride = 2, padding = 0)
         # Crop + concat step between these 2
         self.convr1 = ConvBnRelu(in_channels, out_channels, kernel_size=(3, 3), stride=1, padding=0)
@@ -97,26 +97,54 @@ class UNetOriginal(nn.Module):
 
         self.up1 = ExpandingPath(in_channels=1024, out_channels=512, upsample_size=(56, 56))
         self.up2 = ExpandingPath(in_channels=512, out_channels=256, upsample_size=(104, 104))
+        # self.up3 = ExpandingPath(in_channels=256, out_channels=128, upsample_size=(200, 200))
         self.up3 = ExpandingPath(in_channels=256, out_channels=128, upsample_size=(200, 200))
-        self.up4 = ExpandingPath(in_channels=128, out_channels=64, upsample_size=(392, 392))
+        # self.up4 = ExpandingPath(in_channels=128, out_channels=64, upsample_size=(392, 392))
+        self.up4 = ExpandingPath(in_channels=128, out_channels=64, upsample_size=(258, 258))
 
         # 1x1 convolution at the last layer
         # Different from the paper is the output size here
         self.output_seg_map = nn.Conv2d(64, 1, kernel_size=(1, 1), padding=0, stride=1)
+        # self.output_seg_map2 = nn.Conv2d(1708, 256, kernel_size=(1, 1), padding=0, stride=2)
+        # self.output_seg_map3 = nn.Conv2d(1708, 256, kernel_size=(1, 1), padding=0, stride=3)
 
     def forward(self, x):
         x, x_trace1 = self.down1(x)  # Calls the forward() method of each layer
+        print("after down1, x is size: "+str(x.size()))
         x, x_trace2 = self.down2(x)
+        print("after down2, x is size: "+str(x.size()))
         x, x_trace3 = self.down3(x)
+        print("after down3, x is size: "+str(x.size()))
         x, x_trace4 = self.down4(x)
+        print("after down4, x is size: "+str(x.size()))
 
         x = self.center(x)
+        print("at center, x is size: "+str(x.size()))
 
         x = self.up1(x, x_trace4)
+        print("after up1, x is size: "+str(x.size()))
         x = self.up2(x, x_trace3)
+        print("after up2, x is size: "+str(x.size()))
         x = self.up3(x, x_trace2)
+        print("after up3, x is size: "+str(x.size()))
         x = self.up4(x, x_trace1)
+        print("after up4, x is size: "+str(x.size()))
 
         out = self.output_seg_map(x)
+        print("after output_seg_map1, x is size: "+str(x.size()))
+        # out = self.output_seg_map2(x)
+        # print("after output_seg_map2, x is size: "+str(x.size()))
+        # out = self.output_seg_map2(x)
+        # print("after output_seg_map2, x is size: "+str(x.size()))
+
         out = torch.squeeze(out, dim=1)
+        print("after squeeze, output size is "+str(out.size()))
+
+        # expanding output to match gt_mask
+        out = out.expand(3,-1,-1)
+        # unsqueezing
+        out = torch.unsqueeze(out,dim=0)
+        
+        print("after expand, output size is "+str(out.size()))
+
         return out

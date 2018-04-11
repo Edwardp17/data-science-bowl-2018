@@ -23,6 +23,11 @@ class IoU(nn.Module):
         
         intersection = torch.min(pred_mask,gt_mask)
         union = torch.max(pred_mask,gt_mask)
+
+        intersection = float(torch.sum(intersection > 0))
+        print(union)
+        union = float(torch.sum(union > 0))
+        print(union)
         # # intersection = Variable(torch.min(pred_mask.data.cpu(),gt_mask.data.cpu()))
         # # union = Variable(torch.max(pred_mask.data.cpu(),gt_mask.data.cpu()))
         # intersection = torch.clamp(pred_mask,max=gt_mask)
@@ -30,8 +35,15 @@ class IoU(nn.Module):
         # intersection = np.min(pred_mask.cpu().numpy(),gt_mask.cpu().numpy())
         # union = np.min(pred_mask.cpu().numpy(),gt_mask.cpu().numpy())
 
+        # print("intersection: "+str(torch.sum(intersection > 0.0)))
+        # print("union: "+str(torch.sum(union > 0.0)))
+        # print("intersection: "+str(torch.sum(intersection)))
+        # print("union: "+str(torch.sum(union)))
+
         iou = torch.sum(intersection > 0) / torch.sum(union > 0)
 
         # since we're building a loss function, we want it to be
         # the opposite of what we're optimizing for.
+        print(type(iou))
+        print(iou)
         return (1 - iou)

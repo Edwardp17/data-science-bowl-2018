@@ -14,8 +14,8 @@ from encoding.encoding import RunLengthEncoding
 def main(predict=True):
     # Hyperparameters
     print("Setting hyperparameters..")
-    im_height=256
-    im_width=256
+    im_height=512
+    im_width=512
     # NOTE: im_channels is no longer incorporated in resizing images - images are converted to grayscale during resizing.
     im_channels=3 # setting im_channels to 2 since masks are black and white
     print("im_height: "+str(im_height))
@@ -46,7 +46,8 @@ def main(predict=True):
     # NOTE: All of this data is returned as tensors, not numpy arrays
     # as was originally the case in Ekami's implementation.
     print("Getting training files..")
-    X_train, y_train, X_valid, y_valid = ds_fetcher.get_train_files(validation_size=validation_size,im_dim_3=im_channels)
+    X_train, y_train, X_valid, y_valid = ds_fetcher.get_train_files(validation_size=validation_size,\
+    im_dim_1=im_height,im_dim_2=im_width,im_dim_3=im_channels)
     print("Training files loaded!")
     # TODO: Implement get_test_files
     # full_x_test = ds_fetcher.get_test_files(sample_size)

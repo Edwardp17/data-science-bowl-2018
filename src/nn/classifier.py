@@ -33,8 +33,15 @@ class DSBowlCLassifier:
     # to minimize the loss criteria for each image, it should minimize average
     # losses across many images as well.
     def _criterion(self, pred_mask, gt_mask):
-        pred_mask = pred_mask.view(1,-1)
-        gt_mask = gt_mask.view(1,-1)
+        
+        print("gt_mask is size: "+str(gt_mask.size()))
+
+        # pred_mask = pred_mask.view(-1,1)
+        # gt_mask = gt_mask.view(-1,1)
+
+        # print("gt_mask size after view is "+str(gt_mask.size()))
+        # print("pred_mask size after view is "+str(pred_mask.size()))
+
         print(type(pred_mask),type(gt_mask))
         # NOTE: explicitly calling forward() might not be
         # right here.
