@@ -239,12 +239,17 @@ class DatasetFetcher:
 
                     arr_full_mask = np.maximum(arr_full_mask,arr_mask)
                 
-                # ONLY TESTING
-                print(arr_full_mask)
                 # convert numpy array to tensor
                 t_full_mask = torch.from_numpy(arr_full_mask)
                 # append tensor to y
                 y.append(t_full_mask)
+
+        # ONLY TESTING
+        print(len(X_train),len(y_train))
+        print(len(X_valid),len(y_valid))
+
+        okay = input("Okay?")
+        if okay != 'y': raise ValueError("Not okay")
 
         # Check if training data looks alright
         ix = random.randint(0, len(ids_train_split))
