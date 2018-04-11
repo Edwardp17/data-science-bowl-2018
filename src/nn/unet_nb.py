@@ -59,9 +59,14 @@ class ExpandingPath(nn.Module):
         Returns:
             The concatenated tensor
         """
-        c = (bypass.size()[2] - upsampled.size()[2]) // 2
-        
-        bypass = F.pad(bypass, (-c, -c, -c, -c))
+
+        c = (bypass.size()[2] - upsampled.size()[2]) / 2
+        if c % 1 != 0:
+            floor = int(c // 1)
+            ceiling = int((c // 1) + 1)
+            bypass = F.pad(bypass,(-floor, -ceiling, -floor, -ceiling))
+        else:
+            bypass = F.pad(bypass, (-c, -c, -c, -c))
 
         return torch.cat((upsampled, bypass), 1)
 
