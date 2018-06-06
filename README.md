@@ -2,6 +2,8 @@
 
 Link to competition: https://www.kaggle.com/c/data-science-bowl-2018
 
+UNet to automate nucleus detection in biomedical images.
+
 Notes:
 - The data for this competition is not included in this notebook. It can be found on the Kaggle competition site. Pay attention to the directory paths outlined in this notebook:
   - For running this notebook outside of Kaggle, all data should be placed in a `data/` directory as the data is received from Kaggle.
